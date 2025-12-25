@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小兒抗生素劑量速算器</title>
+    <style>
+        body { font-family: "Microsoft JhengHei", Arial, sans-serif; background-color: #f4f6f9; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #2c3e50; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box; }
+        .btn { width: 100%; padding: 12px; background-color: #3498db; color: white; border: none; border-radius: 5px; font-size: 18px; cursor: pointer; transition: 0.3s; }
+        .btn:hover { background-color: #2980b9; }
+        .result-box { margin-top: 25px; padding: 20px; background-color: #e8f6f3; border-left: 5px solid #1abc9c; display: none; }
+        .result-item { margin-bottom: 10px; font-size: 18px; }
+        .highlight { font-weight: bold; color: #e74c3c; font-size: 22px; }
+        .note { font-size: 12px; color: #7f8c8d; margin-top: 20px; text-align: center; border-top: 1px solid #eee; padding-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🏥 小兒抗生素劑量速算</h2>
+    
+    <div class="form-group">
+        <label for="weight">小朋友體重 (kg)</label>
+        <input type="number" id="weight" placeholder="輸入體重，例如: 15" step="0.1">
+    </div>
+
+    <div class="form-group">
+        <label for="drug">選擇藥品 (院內品項)</label>
+        <select id="drug" onchange="updateDosingParams()">
+            <option value="amox_low">Amoxicillin (一般劑量 40mg/kg)</option>
+            <option value="amox_high">Amoxicillin (高劑量 80mg/kg)</option>
+            <option value="zith">Azithromycin (10mg/kg)</option>
+        </select>
+    </div>
+
+    <div style="background: #f9f9f9; padding: 10px; border-radius: 5px; margin-bottom: 20px; font-size: 14px; color: #555;">
+        <div>藥品濃度: <span id="display-conc">--</span> mg/mL</div>
+        <div>計算標準: <span id="display-std">--</span> mg/kg/day</div>
+        <div>頻次: <span id="display-freq">--</span> 次/天</div>
+    </div>
+
+    <button class="btn" onclick="calculate()">計算劑量</button>
+
+    <div id="result" class="result-box">
+        <div class="result-item">建議每次抽取：<span class="highlight" id="volPerDose">0</span> mL</div>
+        <div class="result-item" style="font-size: 16px;">(每日總量: <span id="totalVol">0</span> mL)</div>
+        <hr>
+        <div class="result-item" style="font-size: 14px; color: #555;">每日總劑量: <span id="totalMg">0</span> mg</div>
+    </div>
+
+    <div class="note">
+        ⚠️ 僅供藥師參考輔助，實際劑量請依醫師臨床判斷及仿單為準。<br>
+        適用院內規格：Amoxicillin (250mg/5mL), Azithromycin (200mg/5mL)
+    </div>
+</div>
+
+<script>
+    // 定義藥品數據庫 (請依貴院實際濃度修改)
+    const drugs = {
+        'amox_low': { 
+            name: 'Amoxicillin (一般)', 
+            conc: 50, // 250mg/5mL = 50mg/mL
+            stdDose: 40, // mg/kg/day
+            freq: 3 // TID
+        },
+        'amox_high': { 
+            name: 'Amoxicillin (High Dose)', 
+            conc: 50, // 250mg/5mL = 50mg/mL
+            stdDose: 80, // AOM高劑量
+            freq: 2 // High dose常為BID，若貴院是TID請改為3
+        },
+        'zith': { 
+            name: 'Azithromycin', 
+            conc: 40, // 200mg/5mL = 40mg/mL
+            stdDose: 10, // mg/kg/day
+            freq: 1 // QD
+        }
+    };
+
+    function updateDosingParams() {
+        const drugKey = document.getElementById('drug').value;
+        const drug = drugs[drugKey];
+        document.getElementById('display-conc').innerText = drug.conc;
+        document.getElementById('display-std').innerText = drug.stdDose;
+        document.getElementById('display-freq').innerText = drug.freq;
+    }
+
+    function calculate() {
+        const weight = parseFloat(document.getElementById('weight').value);
+        const drugKey = document.getElementById('drug').value;
+        
+        if (!weight || weight <= 0) {
+            alert("請輸入有效的體重！");
+            return;
+        }
+
+        const drug = drugs[drugKey];
+
+        // 計算邏輯
+        // 1. 每日總劑量 (mg) = 體重 * 標準劑量
+        const totalMg = weight * drug.stdDose;
+        
+        // 2. 每日總體積 (mL) = 每日總劑量 / 濃度
+        const totalVol = totalMg / drug.conc;
+
+        // 3. 每次體積 (mL) = 每日總體積 / 頻次
+        const volPerDose = totalVol / drug.freq;
+
+        // 顯示結果 (四捨五入到小數點後1位)
+        document.getElementById('volPerDose').innerText = volPerDose.toFixed(1);
+        document.getElementById('totalVol').innerText = totalVol.toFixed(1);
+        document.getElementById('totalMg').innerText = totalMg.toFixed(0);
+        
+        document.getElementById('result').style.display = 'block';
+    }
+
+    // 初始化顯示
+    updateDosingParams();
+</script>
+
+</body>
+</html>
