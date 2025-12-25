@@ -16,17 +16,20 @@
         .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         h2 { text-align: center; color: #2c3e50; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #34495e; }
         input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box; }
         .btn { width: 100%; padding: 12px; background-color: #3498db; color: white; border: none; border-radius: 5px; font-size: 18px; cursor: pointer; transition: 0.3s; }
         .btn:hover { background-color: #2980b9; }
+        
+        /* 結果區塊樣式 */
         .result-box { margin-top: 25px; padding: 20px; background-color: #e8f6f3; border-left: 5px solid #1abc9c; display: none; }
         .result-item { margin-bottom: 10px; font-size: 18px; }
-        .highlight { font-weight: bold; color: #e74c3c; font-size: 22px; }
+        .highlight { font-weight: bold; color: #e74c3c; font-size: 24px; }
+        
+        /* 年齡層選擇區塊 (預設隱藏) */
+        #age-section { display: none; background-color: #fff3cd; padding: 15px; border-radius: 5px; border: 1px solid #ffeeba; margin-bottom: 20px; }
+        
         .note { font-size: 12px; color: #7f8c8d; margin-top: 20px; text-align: center; border-top: 1px solid #eee; padding-top: 10px; }
-        .tag { font-size: 12px; padding: 2px 6px; border-radius: 4px; color: white; margin-left: 5px; vertical-align: middle; }
-        .tag-abx { background-color: #f39c12; }
-        .tag-flu { background-color: #e74c3c; }
     </style>
 </head>
 <body>
@@ -38,27 +41,35 @@
     </h2>
     
     <div class="form-group">
-        <label for="weight">小朋友體重 (kg)</label>
-        <input type="number" id="weight" placeholder="輸入體重，例如: 15" step="0.1">
-    </div>
-
-    <div class="form-group">
-        <label for="drug">選擇藥品</label>
-        <select id="drug" onchange="updateDosingParams()">
+        <label for="drug">1. 選擇藥品</label>
+        <select id="drug" onchange="updateUI()">
             <optgroup label="💊 抗生素 (Antibiotics)">
                 <option value="amox_low">Amoxicillin (一般 40mg/kg)</option>
                 <option value="amox_high">Amoxicillin (高劑量 80mg/kg)</option>
                 <option value="zith">Azithromycin (10mg/kg)</option>
             </optgroup>
             <optgroup label="🦠 抗病毒 (Antiviral)">
-                <option value="tamiflu">Tamiflu (克流感治療劑量)</option>
+                <option value="tamiflu">Tamiflu (克流感)</option>
             </optgroup>
         </select>
     </div>
 
+    <div id="age-section" class="form-group">
+        <label for="ageGroup">2. 病人年齡層 (決定計算公式)</label>
+        <select id="ageGroup" onchange="updateParamsDisplay()">
+            <option value="child">滿 1 歲以上 (體重區間法)</option>
+            <option value="infant">未滿 1 歲 (3mg/kg 乘法)</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="weight">3. 小朋友體重 (kg)</label>
+        <input type="number" id="weight" placeholder="輸入體重，例如: 15" step="0.1">
+    </div>
+
     <div style="background: #f9f9f9; padding: 10px; border-radius: 5px; margin-bottom: 20px; font-size: 14px; color: #555;">
         <div>藥品濃度: <span id="display-conc">--</span> mg/mL</div>
-        <div>計算模式: <span id="display-std">--</span></div>
+        <div>計算標準: <span id="display-std">--</span></div>
         <div>頻次: <span id="display-freq">--</span> 次/天</div>
     </div>
 
@@ -69,55 +80,126 @@
         <div class="result-item">建議抽取: <span class="highlight" id="res-dose-ml">0</span> mL</div>
         <hr>
         <div class="result-item" style="font-size: 16px; color: #555;">每日總劑量: <span id="res-total-mg">0</span> mg</div>
-        <div class="result-item" style="font-size: 16px; color: #555;" id="desc-text"></div>
+        <div class="result-item" style="font-size: 15px; color: #e67e22; margin-top:5px;" id="desc-text"></div>
     </div>
 
     <div class="note">
-        ⚠️ 僅供藥師參考輔助，實際劑量請依醫師臨床判斷及仿單為準。<br>
-        克流感採用 CDC 滿一歲以上體重區間建議 (BID x 5 days)。
+        ⚠️ 僅供藥師參考輔助，實際劑量請依醫師臨床判斷為準。<br>
+        克流感依據 CDC/TW Guidelines 設定 (1歲以下 3mg/kg; 1歲以上區間給藥)。
     </div>
 </div>
 
 <script>
-    /* 配置說明:
-       type: 'linear' (體重x係數) | 'range' (區間查表)
-       conc: 藥品濃度 mg/mL
-       stdDose: 係數 (linear用)
-       freq: 頻次
-    */
+    // 藥品資料庫
     const drugs = {
-        'amox_low': { 
-            name: 'Amoxicillin (一般)', type: 'linear', 
-            conc: 50, stdDose: 40, freq: 3, unit: 'mg/kg/day' 
-        },
-        'amox_high': { 
-            name: 'Amoxicillin (High Dose)', type: 'linear', 
-            conc: 50, stdDose: 80, freq: 2, unit: 'mg/kg/day' 
-        },
-        'zith': { 
-            name: 'Azithromycin', type: 'linear', 
-            conc: 40, stdDose: 10, freq: 1, unit: 'mg/kg/day' 
-        },
-        'tamiflu': { 
-            name: 'Tamiflu (Oseltamivir)', type: 'range', 
-            conc: 6, // 懸浮液通常是 6mg/mL，若磨粉泡製請自行換算
-            freq: 2, unit: 'Table Lookup' 
-        }
+        'amox_low': { name: 'Amoxicillin (一般)', conc: 50, stdDose: 40, freq: 3, unit: 'mg/kg/day' },
+        'amox_high': { name: 'Amoxicillin (High Dose)', conc: 50, stdDose: 80, freq: 2, unit: 'mg/kg/day' },
+        'zith': { name: 'Azithromycin', conc: 40, stdDose: 10, freq: 1, unit: 'mg/kg/day' },
+        'tamiflu': { name: 'Tamiflu', conc: 6, freq: 2, unit: 'Variable' } // 濃度預設6mg/mL
     };
 
-    function updateDosingParams() {
+    // UI 更新：判斷是否顯示年齡選單
+    function updateUI() {
+        const drugKey = document.getElementById('drug').value;
+        const ageSection = document.getElementById('age-section');
+        
+        if (drugKey === 'tamiflu') {
+            ageSection.style.display = 'block';
+        } else {
+            ageSection.style.display = 'none';
+        }
+        updateParamsDisplay();
+    }
+
+    // 更新下方參數顯示
+    function updateParamsDisplay() {
         const drugKey = document.getElementById('drug').value;
         const drug = drugs[drugKey];
+        const ageGroup = document.getElementById('ageGroup').value;
+
         document.getElementById('display-conc').innerText = drug.conc;
         document.getElementById('display-freq').innerText = drug.freq;
-        
-        if(drug.type === 'linear') {
-            document.getElementById('display-std').innerText = drug.stdDose + ' ' + drug.unit;
+
+        if (drugKey === 'tamiflu') {
+            if (ageGroup === 'infant') {
+                document.getElementById('display-std').innerText = "3 mg/kg/dose (未滿1歲)";
+            } else {
+                document.getElementById('display-std').innerText = "CDC 體重區間表 (1歲以上)";
+            }
         } else {
-            document.getElementById('display-std').innerText = "體重區間查表";
+            document.getElementById('display-std').innerText = drug.stdDose + " " + drug.unit;
         }
     }
 
-    // 克流感區間邏輯 (CDC Standard for > 1yr)
-    function getTamifluDose(weight) {
-        if (weight <= 1
+    // 克流感計算邏輯
+    function getTamifluDose(weight, isInfant) {
+        if (isInfant) {
+            // 未滿1歲：CDC建議 3mg/kg/dose (早產兒另計，此處以足月兒為主)
+            return weight * 3; 
+        } else {
+            // 滿1歲以上：區間查表
+            if (weight <= 15) return 30;
+            if (weight <= 23) return 45;
+            if (weight <= 40) return 60;
+            return 75;
+        }
+    }
+
+    function calculate() {
+        const weight = parseFloat(document.getElementById('weight').value);
+        const drugKey = document.getElementById('drug').value;
+        const ageGroup = document.getElementById('ageGroup').value;
+        
+        if (!weight || weight <= 0) {
+            alert("請輸入有效的體重！");
+            return;
+        }
+
+        const drug = drugs[drugKey];
+        let singleDoseMg = 0;
+        let desc = "";
+
+        if (drugKey === 'tamiflu') {
+            // 判斷是否為嬰兒
+            const isInfant = (ageGroup === 'infant');
+            singleDoseMg = getTamifluDose(weight, isInfant);
+            
+            // 產生備註文字
+            if (isInfant) {
+                desc = "⚠️ 計算依據：未滿1歲採 3mg/kg 計算";
+            } else {
+                desc = "📋 計算依據：滿1歲採體重區間查表";
+            }
+
+        } else {
+            // 一般抗生素 (Total mg / freq)
+            const totalDailyMg = weight * drug.stdDose;
+            singleDoseMg = totalDailyMg / drug.freq;
+        }
+
+        // 共通計算：換算成 mL
+        const singleDoseMl = singleDoseMg / drug.conc;
+        const totalDailyMg = singleDoseMg * drug.freq;
+
+        // 顯示結果
+        document.getElementById('res-dose-mg').innerText = singleDoseMg.toFixed(0); 
+        document.getElementById('res-dose-ml').innerText = singleDoseMl.toFixed(1);
+        document.getElementById('res-total-mg').innerText = totalDailyMg.toFixed(0);
+        document.getElementById('desc-text').innerText = desc;
+        
+        document.getElementById('result').style.display = 'block';
+    }
+
+    // 初始化
+    updateUI();
+
+    // Service Worker 註冊 (維持PWA功能)
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js');
+        });
+    }
+</script>
+
+</body>
+</html>
