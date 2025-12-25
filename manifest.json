@@ -1,0 +1,15 @@
+{
+  "name": "小兒抗生素速算",
+  "short_name": "抗生素速算",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f4f6f9",
+  "theme_color": "#3498db",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
