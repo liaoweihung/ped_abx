@@ -3,11 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>小兒抗生素劑量速算器</title>
+    <title>小兒劑量速算器</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#3498db">
+    <link rel="apple-touch-icon" href="icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
     <style>
         body { font-family: "Microsoft JhengHei", Arial, sans-serif; background-color: #f4f6f9; padding: 20px; }
         .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #2c3e50; }
+        h2 { text-align: center; color: #2c3e50; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 5px; font-weight: bold; }
         input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box; }
@@ -17,12 +24,18 @@
         .result-item { margin-bottom: 10px; font-size: 18px; }
         .highlight { font-weight: bold; color: #e74c3c; font-size: 22px; }
         .note { font-size: 12px; color: #7f8c8d; margin-top: 20px; text-align: center; border-top: 1px solid #eee; padding-top: 10px; }
+        .tag { font-size: 12px; padding: 2px 6px; border-radius: 4px; color: white; margin-left: 5px; vertical-align: middle; }
+        .tag-abx { background-color: #f39c12; }
+        .tag-flu { background-color: #e74c3c; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>🏥 小兒抗生素劑量速算</h2>
+    <h2>
+        <img src="icon.png" style="width: 40px; height: 40px; border-radius: 50%;"> 
+        藥師小幫手
+    </h2>
     
     <div class="form-group">
         <label for="weight">小朋友體重 (kg)</label>
@@ -30,55 +43,65 @@
     </div>
 
     <div class="form-group">
-        <label for="drug">選擇藥品 (院內品項)</label>
+        <label for="drug">選擇藥品</label>
         <select id="drug" onchange="updateDosingParams()">
-            <option value="amox_low">Amoxicillin (一般劑量 40mg/kg)</option>
-            <option value="amox_high">Amoxicillin (高劑量 80mg/kg)</option>
-            <option value="zith">Azithromycin (10mg/kg)</option>
+            <optgroup label="💊 抗生素 (Antibiotics)">
+                <option value="amox_low">Amoxicillin (一般 40mg/kg)</option>
+                <option value="amox_high">Amoxicillin (高劑量 80mg/kg)</option>
+                <option value="zith">Azithromycin (10mg/kg)</option>
+            </optgroup>
+            <optgroup label="🦠 抗病毒 (Antiviral)">
+                <option value="tamiflu">Tamiflu (克流感治療劑量)</option>
+            </optgroup>
         </select>
     </div>
 
     <div style="background: #f9f9f9; padding: 10px; border-radius: 5px; margin-bottom: 20px; font-size: 14px; color: #555;">
         <div>藥品濃度: <span id="display-conc">--</span> mg/mL</div>
-        <div>計算標準: <span id="display-std">--</span> mg/kg/day</div>
+        <div>計算模式: <span id="display-std">--</span></div>
         <div>頻次: <span id="display-freq">--</span> 次/天</div>
     </div>
 
     <button class="btn" onclick="calculate()">計算劑量</button>
 
     <div id="result" class="result-box">
-        <div class="result-item">建議每次抽取：<span class="highlight" id="volPerDose">0</span> mL</div>
-        <div class="result-item" style="font-size: 16px;">(每日總量: <span id="totalVol">0</span> mL)</div>
+        <div class="result-item">單次劑量: <span class="highlight" id="res-dose-mg">0</span> mg</div>
+        <div class="result-item">建議抽取: <span class="highlight" id="res-dose-ml">0</span> mL</div>
         <hr>
-        <div class="result-item" style="font-size: 14px; color: #555;">每日總劑量: <span id="totalMg">0</span> mg</div>
+        <div class="result-item" style="font-size: 16px; color: #555;">每日總劑量: <span id="res-total-mg">0</span> mg</div>
+        <div class="result-item" style="font-size: 16px; color: #555;" id="desc-text"></div>
     </div>
 
     <div class="note">
         ⚠️ 僅供藥師參考輔助，實際劑量請依醫師臨床判斷及仿單為準。<br>
-        適用院內規格：Amoxicillin (250mg/5mL), Azithromycin (200mg/5mL)
+        克流感採用 CDC 滿一歲以上體重區間建議 (BID x 5 days)。
     </div>
 </div>
 
 <script>
-    // 定義藥品數據庫 (請依貴院實際濃度修改)
+    /* 配置說明:
+       type: 'linear' (體重x係數) | 'range' (區間查表)
+       conc: 藥品濃度 mg/mL
+       stdDose: 係數 (linear用)
+       freq: 頻次
+    */
     const drugs = {
         'amox_low': { 
-            name: 'Amoxicillin (一般)', 
-            conc: 50, // 250mg/5mL = 50mg/mL
-            stdDose: 40, // mg/kg/day
-            freq: 3 // TID
+            name: 'Amoxicillin (一般)', type: 'linear', 
+            conc: 50, stdDose: 40, freq: 3, unit: 'mg/kg/day' 
         },
         'amox_high': { 
-            name: 'Amoxicillin (High Dose)', 
-            conc: 50, // 250mg/5mL = 50mg/mL
-            stdDose: 80, // AOM高劑量
-            freq: 2 // High dose常為BID，若貴院是TID請改為3
+            name: 'Amoxicillin (High Dose)', type: 'linear', 
+            conc: 50, stdDose: 80, freq: 2, unit: 'mg/kg/day' 
         },
         'zith': { 
-            name: 'Azithromycin', 
-            conc: 40, // 200mg/5mL = 40mg/mL
-            stdDose: 10, // mg/kg/day
-            freq: 1 // QD
+            name: 'Azithromycin', type: 'linear', 
+            conc: 40, stdDose: 10, freq: 1, unit: 'mg/kg/day' 
+        },
+        'tamiflu': { 
+            name: 'Tamiflu (Oseltamivir)', type: 'range', 
+            conc: 6, // 懸浮液通常是 6mg/mL，若磨粉泡製請自行換算
+            freq: 2, unit: 'Table Lookup' 
         }
     };
 
@@ -86,42 +109,15 @@
         const drugKey = document.getElementById('drug').value;
         const drug = drugs[drugKey];
         document.getElementById('display-conc').innerText = drug.conc;
-        document.getElementById('display-std').innerText = drug.stdDose;
         document.getElementById('display-freq').innerText = drug.freq;
-    }
-
-    function calculate() {
-        const weight = parseFloat(document.getElementById('weight').value);
-        const drugKey = document.getElementById('drug').value;
         
-        if (!weight || weight <= 0) {
-            alert("請輸入有效的體重！");
-            return;
+        if(drug.type === 'linear') {
+            document.getElementById('display-std').innerText = drug.stdDose + ' ' + drug.unit;
+        } else {
+            document.getElementById('display-std').innerText = "體重區間查表";
         }
-
-        const drug = drugs[drugKey];
-
-        // 計算邏輯
-        // 1. 每日總劑量 (mg) = 體重 * 標準劑量
-        const totalMg = weight * drug.stdDose;
-        
-        // 2. 每日總體積 (mL) = 每日總劑量 / 濃度
-        const totalVol = totalMg / drug.conc;
-
-        // 3. 每次體積 (mL) = 每日總體積 / 頻次
-        const volPerDose = totalVol / drug.freq;
-
-        // 顯示結果 (四捨五入到小數點後1位)
-        document.getElementById('volPerDose').innerText = volPerDose.toFixed(1);
-        document.getElementById('totalVol').innerText = totalVol.toFixed(1);
-        document.getElementById('totalMg').innerText = totalMg.toFixed(0);
-        
-        document.getElementById('result').style.display = 'block';
     }
 
-    // 初始化顯示
-    updateDosingParams();
-</script>
-
-</body>
-</html>
+    // 克流感區間邏輯 (CDC Standard for > 1yr)
+    function getTamifluDose(weight) {
+        if (weight <= 1
