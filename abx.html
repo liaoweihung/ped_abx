@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>小兒抗生素速算 </title>
+    <title>小兒抗生素速算 (醫學會版)</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2980b9">
@@ -12,19 +12,11 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <style>
-        body { font-family: "Microsoft JhengHei", -apple-system, sans-serif; background-color: #f4f7f6; margin: 
-
-0; padding: 0; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; background: white; min-height: 100vh; display: flex; 
-
-flex-direction: column; }
+        body { font-family: "Microsoft JhengHei", -apple-system, sans-serif; background-color: #f4f7f6; margin: 0; padding: 0; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background: white; min-height: 100vh; display: flex; flex-direction: column; }
         
-        header { background: #2980b9; color: white; padding: 15px; text-align: center; box-shadow: 0 2px 5px 
-
-rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
-        header h2 { margin: 0; font-size: 18px; display: flex; align-items: center; justify-content: center; gap: 
-
-8px; }
+        header { background: #2980b9; color: white; padding: 15px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        header h2 { margin: 0; font-size: 18px; display: flex; align-items: center; justify-content: center; gap: 8px; }
 
         .content { padding: 15px; flex: 1; }
 
@@ -33,64 +25,42 @@ rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
             flex: 1; padding: 12px; border: 1px solid #bdc3c7; background: #ecf0f1; color: #7f8c8d; 
             font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.2s;
         }
-        .tab-btn.active { background: #3498db; color: white; border-color: #3498db; box-shadow: 0 3px 6px rgba
-
-(52, 152, 219, 0.3); }
+        .tab-btn.active { background: #3498db; color: white; border-color: #3498db; box-shadow: 0 3px 6px rgba(52, 152, 219, 0.3); }
 
         .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #2c3e50; font-size: 
-
-15px; }
-        select, input { width: 100%; padding: 12px; border: 1px solid #bdc3c7; border-radius: 8px; font-size: 
-
-16px; background: #fff; box-sizing: border-box; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #2c3e50; font-size: 15px; }
+        select, input { width: 100%; padding: 12px; border: 1px solid #bdc3c7; border-radius: 8px; font-size: 16px; background: #fff; box-sizing: border-box; }
         select:focus, input:focus { border-color: #3498db; outline: none; }
 
         /* 特殊樣式：年齡與估算按鈕併排 */
         .age-row { display: flex; gap: 10px; align-items: flex-end; }
         .age-input-group { flex: 1; }
-        .estimate-btn { padding: 12px 10px; background-color: #17a2b8; color: white; border: none; border-radius: 
-
-8px; cursor: pointer; font-size: 14px; height: 46px; white-space: nowrap; }
+        .estimate-btn { padding: 12px 10px; background-color: #17a2b8; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; height: 46px; white-space: nowrap; }
         
-        .calc-btn { width: 100%; padding: 14px; background: #e67e22; color: white; border: none; border-radius: 
-
-8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 0 #d35400; }
+        .calc-btn { width: 100%; padding: 14px; background: #e67e22; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 0 #d35400; }
         .calc-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #d35400; }
 
-        .result-card { background-color: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 0; 
-
-margin-top: 25px; display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.05); overflow: hidden; }
-        .res-header { padding: 10px 15px; font-weight: bold; color: white; display: flex; justify-content: 
-
-space-between; align-items: center; }
+        .result-card { background-color: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 0; margin-top: 25px; display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.05); overflow: hidden; }
+        .res-header { padding: 10px 15px; font-weight: bold; color: white; display: flex; justify-content: space-between; align-items: center; }
         .res-hosp { background-color: #7f8c8d; }
         .res-assoc { background-color: #2980b9; }
 
         .res-body { padding: 15px; display: flex; align-items: baseline; justify-content: space-between; }
         .res-val { font-size: 32px; font-weight: bold; color: #333; }
         .res-unit { font-size: 16px; color: #666; margin-left: 5px; }
-        .res-freq { background: #eee; padding: 4px 10px; border-radius: 15px; font-size: 14px; font-weight: bold; 
-
-color: #555; }
+        .res-freq { background: #eee; padding: 4px 10px; border-radius: 15px; font-size: 14px; font-weight: bold; color: #555; }
 
         .guide-box { margin-top: 20px; font-size: 13px; line-height: 1.5; color: #555; }
-        .guide-item { margin-bottom: 15px; padding: 10px; background: #f9f9f9; border-left: 4px solid #ccc; 
-
-border-radius: 4px; }
+        .guide-item { margin-bottom: 15px; padding: 10px; background: #f9f9f9; border-left: 4px solid #ccc; border-radius: 4px; }
         .guide-title { display: block; font-weight: bold; margin-bottom: 5px; color: #333; }
         .guide-hosp-border { border-left-color: #7f8c8d; }
         .guide-assoc-border { border-left-color: #2980b9; background-color: #eaf2f8; }
-        .note-warning { color: #c0392b; font-weight: bold; margin-top: 5px; font-size: 14px; display: block; 
-
-padding: 0 15px 15px 15px; }
+        .note-warning { color: #c0392b; font-weight: bold; margin-top: 5px; font-size: 14px; display: block; padding: 0 15px 15px 15px; }
 
         /* 估算提示文字 */
         #estimate-msg { font-size: 13px; color: #17a2b8; margin-top: 5px; display: none; }
 
-        footer { text-align: center; padding: 20px; background: #eee; font-size: 12px; color: #aaa; margin-top: 
-
-auto; }
+        footer { text-align: center; padding: 20px; background: #eee; font-size: 12px; color: #aaa; margin-top: auto; }
     </style>
 </head>
 <body>
@@ -98,9 +68,7 @@ auto; }
 <div class="container">
     <header>
         <h2>
-            <img src="icon.png" style="width: 28px; height: 28px; border-radius: 50%;" 
-
-onerror="this.style.display='none'">
+            <img src="icon.png" style="width: 28px; height: 28px; border-radius: 50%;" onerror="this.style.display='none'">
             小兒抗生素速算
         </h2>
     </header>
@@ -141,9 +109,7 @@ onerror="this.style.display='none'">
                     <small>Hospital Std.</small>
                 </div>
                 <div class="res-body">
-                    <div><span class="res-val" id="val-hosp">--</span><span class="res-unit" id="unit-
-
-hosp">mL</span></div>
+                    <div><span class="res-val" id="val-hosp">--</span><span class="res-unit" id="unit-hosp">mL</span></div>
                     <div class="res-freq" id="freq-hosp">--</div>
                 </div>
             </div>
@@ -154,9 +120,7 @@ hosp">mL</span></div>
                     <small>High Dose</small>
                 </div>
                 <div class="res-body">
-                    <div><span class="res-val" id="val-assoc">--</span><span class="res-unit" id="unit-
-
-assoc">mL</span></div>
+                    <div><span class="res-val" id="val-assoc">--</span><span class="res-unit" id="unit-assoc">mL</span></div>
                     <div class="res-freq" id="freq-assoc">--</div>
                 </div>
                 <span id="warning-assoc" class="note-warning"></span>
@@ -200,44 +164,18 @@ assoc">mL</span></div>
 
     const db = {
         susp: [
-            { id: 'aug', name: 'Augmentin (Susp)', conc: 80, hospBasis: 45, hospFreq: 2, assocBasis: 90, 
-
-assocFreq: 2, unit: 'mL', hospText: '一般感染: 25 mg/kg BID; 嚴重: 45 mg/kg BID', assocText: '80-90 mg 
-
-amoxicillin/kg/day，bid-tid (建議比例14:1，院內為7:1)' },
-            { id: 'baktar', name: 'Sulfacotrim (Baktar)', conc: 8, isAgeBased: true, hospBasis: 0, hospFreq: 2, 
-
-assocBasis: 10, assocFreq: 2, unit: 'mL', hospText: '6週-5月: 2.5ml BID; 6月-5歲: 5ml BID; 6-12歲: 10ml BID', 
-
-assocText: '首選反應不佳時 TMP 6-12 mg/kg/day bid' },
-            { id: 'zith', name: 'Zithromax', conc: 40, hospBasis: 10, hospFreq: 1, assocBasis: null, unit: 'mL', 
-
-hospText: '中耳炎: 10 mg/kg (單次或3天); 肺炎: D1 10mg/kg, D2-5 5mg/kg', assocText: '' },
-            { id: 'ulexin', name: 'Ulexin (Cephalexin)', conc: 25, hospBasis: 50, hospFreq: 4, assocBasis: null, 
-
-unit: 'mL', hospText: '<25kg: 25-50 mg/kg/day div 4; >25kg: 250-500mg Q6H', assocText: '' }
+            { id: 'aug', name: 'Augmentin (400/57)', conc: 80, hospBasis: 45, hospFreq: 2, assocBasis: 90, assocFreq: 2, unit: 'mL', hospText: '一般感染: 25 mg/kg BID; 嚴重: 45 mg/kg BID', assocText: '80-90 mg amoxicillin/kg/day，bid-tid (建議比例14:1，院內為7:1)' },
+            { id: 'baktar', name: 'Sulfacotrim (Baktar)', conc: 8, isAgeBased: true, hospBasis: 0, hospFreq: 2, assocBasis: 10, assocFreq: 2, unit: 'mL', hospText: '6週-5月: 2.5ml BID; 6月-5歲: 5ml BID; 6-12歲: 10ml BID', assocText: '首選反應不佳時 TMP 6-12 mg/kg/day bid' },
+            { id: 'zith', name: 'Zithromax', conc: 40, hospBasis: 10, hospFreq: 1, assocBasis: null, unit: 'mL', hospText: '中耳炎: 10 mg/kg (單次或3天); 肺炎: D1 10mg/kg, D2-5 5mg/kg', assocText: '' },
+            { id: 'ulexin', name: 'Ulexin (Cephalexin)', conc: 25, hospBasis: 50, hospFreq: 4, assocBasis: null, unit: 'mL', hospText: '<25kg: 25-50 mg/kg/day div 4; >25kg: 250-500mg Q6H', assocText: '' }
         ],
         pow: [
-            { id: 'cexime', name: 'Cexime (Cefixime)', conc: 100, hospBasis: 8, hospFreq: 2, assocBasis: 10, 
-
-assocFreq: 2, unit: '顆', hospText: '<45kg: 8 mg/kg/day div 1-2; >45kg: 400 mg/day', assocText: '10 mg/kg/day，
-
-bid' },
-            { id: 'amox', name: 'Amoxicillin', conc: 500, hospBasis: 45, hospFreq: 3, assocBasis: 90, assocFreq: 
-
-2, unit: '顆', hospText: '<40kg: 40-45 mg/kg; >40kg: 500mg Q8H', assocText: '80-90 mg/kg/day，bid-tid' },
-            { id: 'ceflour', name: 'Ceflour (Cefuroxime)', conc: 250, hospBasis: 30, hospFreq: 2, assocBasis: 30, 
-
-assocFreq: 2, unit: '顆', hospText: '3 mo-12 yrs: 30 mg/kg/day bid', assocText: '30 mg/kg/day，bid' },
-            { id: 'acylo', name: 'Acylo (Acyclovir)', conc: 400, hospBasis: 80, hospFreq: 4, assocBasis: null, 
-
-unit: '顆', hospText: '水痘: 20 mg/kg QID (Max 800mg)', assocText: '' },
-            { id: 'doxy', name: 'Doxymycin', conc: 100, hospBasis: 4.4, hospFreq: 2, assocBasis: null, unit: 
-
-'顆', hospText: '<45kg: 4.4 mg/kg/day bid; >45kg: 100mg bid', assocText: '' },
-            { id: 'cino', name: 'Cinolone', conc: 250, hospBasis: 30, hospFreq: 2, assocBasis: null, unit: '顆', 
-
-hospText: '10-20 mg/kg Q12H (Max 750mg/dose)', assocText: '' }
+            { id: 'cexime', name: 'Cexime (Cefixime)', conc: 100, hospBasis: 8, hospFreq: 2, assocBasis: 10, assocFreq: 2, unit: '顆', hospText: '<45kg: 8 mg/kg/day div 1-2; >45kg: 400 mg/day', assocText: '10 mg/kg/day，bid' },
+            { id: 'amox', name: 'Amoxicillin', conc: 500, hospBasis: 45, hospFreq: 3, assocBasis: 90, assocFreq: 2, unit: '顆', hospText: '<40kg: 40-45 mg/kg; >40kg: 500mg Q8H', assocText: '80-90 mg/kg/day，bid-tid' },
+            { id: 'ceflour', name: 'Ceflour (Cefuroxime)', conc: 250, hospBasis: 30, hospFreq: 2, assocBasis: 30, assocFreq: 2, unit: '顆', hospText: '3 mo-12 yrs: 30 mg/kg/day bid', assocText: '30 mg/kg/day，bid' },
+            { id: 'acylo', name: 'Acylo (Acyclovir)', conc: 400, hospBasis: 80, hospFreq: 4, assocBasis: null, unit: '顆', hospText: '水痘: 20 mg/kg QID (Max 800mg)', assocText: '' },
+            { id: 'doxy', name: 'Doxymycin', conc: 100, hospBasis: 4.4, hospFreq: 2, assocBasis: null, unit: '顆', hospText: '<45kg: 4.4 mg/kg/day bid; >45kg: 100mg bid', assocText: '' },
+            { id: 'cino', name: 'Cinolone', conc: 250, hospBasis: 30, hospFreq: 2, assocBasis: null, unit: '顆', hospText: '10-20 mg/kg Q12H (Max 750mg/dose)', assocText: '' }
         ]
     };
 
@@ -269,9 +207,7 @@ hospText: '10-20 mg/kg Q12H (Max 750mg/dose)', assocText: '' }
     }
 
     function hideResult() {
-        document.getElementById('results-container').querySelectorAll('.result-card').forEach(el => 
-
-el.style.display = 'none');
+        document.getElementById('results-container').querySelectorAll('.result-card').forEach(el => el.style.display = 'none');
         document.getElementById('guide-container').style.display = 'none';
         document.getElementById('estimate-msg').style.display = 'none';
     }
@@ -354,15 +290,11 @@ el.style.display = 'none');
             hospDose = (dailyMg / drug.conc) / drug.hospFreq;
         }
 
-        const hospDoseText = currentMode === 'pow' ? (Number.isInteger(hospDose) ? hospDose : hospDose.toFixed
-
-(2)) : hospDose.toFixed(1);
+        const hospDoseText = currentMode === 'pow' ? (Number.isInteger(hospDose) ? hospDose : hospDose.toFixed(2)) : hospDose.toFixed(1);
         document.getElementById('val-hosp').innerText = hospDoseText + (hospNote ? "*" : "");
         document.getElementById('unit-hosp').innerText = drug.unit;
         
-        let fTextH = drug.hospFreq === 1 ? 'QD' : (drug.hospFreq === 2 ? 'BID' : (drug.hospFreq === 3 ? 'TID' : 
-
-'QID'));
+        let fTextH = drug.hospFreq === 1 ? 'QD' : (drug.hospFreq === 2 ? 'BID' : (drug.hospFreq === 3 ? 'TID' : 'QID'));
         if (drug.id === 'ulexin') fTextH = 'Q6H';
         document.getElementById('freq-hosp').innerText = fTextH;
         document.getElementById('res-card-hosp').style.display = 'block';
@@ -377,22 +309,16 @@ el.style.display = 'none');
             
             if (currentMode === 'pow' && drug.id === 'cexime' && weight > 45) assocDose = 2; 
             
-            const assocDoseText = currentMode === 'pow' ? (Number.isInteger(assocDose) ? assocDose : 
-
-assocDose.toFixed(2)) : assocDose.toFixed(1);
+            const assocDoseText = currentMode === 'pow' ? (Number.isInteger(assocDose) ? assocDose : assocDose.toFixed(2)) : assocDose.toFixed(1);
             
             document.getElementById('val-assoc').innerText = assocDoseText;
             document.getElementById('unit-assoc').innerText = drug.unit;
             
-            let fTextA = drug.assocFreq === 1 ? 'QD' : (drug.assocFreq === 2 ? 'BID' : (drug.assocFreq === 3 ? 
-
-'TID' : 'QID'));
+            let fTextA = drug.assocFreq === 1 ? 'QD' : (drug.assocFreq === 2 ? 'BID' : (drug.assocFreq === 3 ? 'TID' : 'QID'));
             document.getElementById('freq-assoc').innerText = fTextA;
 
             if (drug.id === 'aug') {
-                document.getElementById('warning-assoc').innerText = "⚠️ 依 90mg/kg 計算。院內配方比例 7:1，請
-
-留意腹瀉副作用。";
+                document.getElementById('warning-assoc').innerText = "⚠️ 依 90mg/kg 計算。院內配方比例 7:1，請留意腹瀉副作用。";
             } else {
                 document.getElementById('warning-assoc').innerText = "";
             }
