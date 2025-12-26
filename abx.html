@@ -1,68 +1,96 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>小兒抗生素速算 (醫學會版)</title>
+    <title>小兒抗生素速算 </title>
     
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#2c3e50">
+    <meta name="theme-color" content="#2980b9">
     <link rel="apple-touch-icon" href="icon.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <style>
-        body { font-family: "Microsoft JhengHei", -apple-system, BlinkMacSystemFont, sans-serif; background-color: #f4f6f9; margin: 0; padding: 0; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; background: white; min-height: 100vh; display: flex; flex-direction: column; }
+        body { font-family: "Microsoft JhengHei", -apple-system, sans-serif; background-color: #f4f7f6; margin: 
+
+0; padding: 0; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background: white; min-height: 100vh; display: flex; 
+
+flex-direction: column; }
         
-        header { background: #2c3e50; color: white; padding: 15px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
-        header h2 { margin: 0; font-size: 18px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        header { background: #2980b9; color: white; padding: 15px; text-align: center; box-shadow: 0 2px 5px 
+
+rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        header h2 { margin: 0; font-size: 18px; display: flex; align-items: center; justify-content: center; gap: 
+
+8px; }
 
         .content { padding: 15px; flex: 1; }
 
-        /* 分頁 Tab */
         .tab-group { display: flex; gap: 10px; margin-bottom: 20px; }
         .tab-btn { 
             flex: 1; padding: 12px; border: 1px solid #bdc3c7; background: #ecf0f1; color: #7f8c8d; 
             font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.2s;
         }
-        .tab-btn.active { background: #3498db; color: white; border-color: #3498db; box-shadow: 0 2px 5px rgba(52, 152, 219, 0.3); }
+        .tab-btn.active { background: #3498db; color: white; border-color: #3498db; box-shadow: 0 3px 6px rgba
 
-        /* 輸入介面 */
+(52, 152, 219, 0.3); }
+
         .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 6px; font-weight: bold; color: #34495e; font-size: 15px; }
-        select, input { width: 100%; padding: 12px; border: 1px solid #bdc3c7; border-radius: 8px; font-size: 16px; background: #fff; box-sizing: border-box; }
-        select:focus, input:focus { border-color: #3498db; outline: none; box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1); }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #2c3e50; font-size: 
 
-        /* 計算按鈕 */
-        .calc-btn { width: 100%; padding: 14px; background: #e67e22; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 0 #d35400; transition: transform 0.1s; }
+15px; }
+        select, input { width: 100%; padding: 12px; border: 1px solid #bdc3c7; border-radius: 8px; font-size: 
+
+16px; background: #fff; box-sizing: border-box; }
+        select:focus, input:focus { border-color: #3498db; outline: none; }
+
+        /* 特殊樣式：年齡與估算按鈕併排 */
+        .age-row { display: flex; gap: 10px; align-items: flex-end; }
+        .age-input-group { flex: 1; }
+        .estimate-btn { padding: 12px 10px; background-color: #17a2b8; color: white; border: none; border-radius: 
+
+8px; cursor: pointer; font-size: 14px; height: 46px; white-space: nowrap; }
+        
+        .calc-btn { width: 100%; padding: 14px; background: #e67e22; color: white; border: none; border-radius: 
+
+8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 0 #d35400; }
         .calc-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #d35400; }
 
-        /* 結果區塊 */
-        .result-card { 
-            background-color: #e8f6f3; border-left: 6px solid #1abc9c; border-radius: 6px; 
-            padding: 20px; margin-top: 25px; display: none; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-        .result-main { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid #d0e9e4; padding-bottom: 15px; margin-bottom: 15px; }
-        .res-value { font-size: 36px; font-weight: bold; color: #c0392b; }
-        .res-unit { font-size: 18px; color: #555; }
-        .res-freq-badge { background: #3498db; color: white; padding: 4px 10px; border-radius: 20px; font-size: 14px; font-weight: bold; }
+        .result-card { background-color: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 0; 
 
-        /* 雙重建議顯示區 */
-        .guide-section { margin-top: 10px; font-size: 14px; line-height: 1.5; }
-        .guide-block { margin-bottom: 15px; padding: 10px; border-radius: 6px; }
-        
-        /* 兒科醫學會樣式 */
-        .guide-assoc { background-color: #eaf2f8; border: 1px solid #aed6f1; }
-        .guide-title-assoc { color: #2980b9; font-weight: bold; display: block; margin-bottom: 5px; font-size: 13px; }
-        
-        /* 院內樣式 */
-        .guide-hosp { background-color: #f8f9fa; border: 1px solid #e9ecef; color: #666; }
-        .guide-title-hosp { color: #7f8c8d; font-weight: bold; display: block; margin-bottom: 5px; font-size: 13px; }
+margin-top: 25px; display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.05); overflow: hidden; }
+        .res-header { padding: 10px 15px; font-weight: bold; color: white; display: flex; justify-content: 
 
-        .note-text { color: #e74c3c; font-size: 13px; margin-top: 5px; font-weight: bold; }
+space-between; align-items: center; }
+        .res-hosp { background-color: #7f8c8d; }
+        .res-assoc { background-color: #2980b9; }
 
-        footer { text-align: center; padding: 20px; background: #eee; font-size: 12px; color: #aaa; margin-top: auto; }
+        .res-body { padding: 15px; display: flex; align-items: baseline; justify-content: space-between; }
+        .res-val { font-size: 32px; font-weight: bold; color: #333; }
+        .res-unit { font-size: 16px; color: #666; margin-left: 5px; }
+        .res-freq { background: #eee; padding: 4px 10px; border-radius: 15px; font-size: 14px; font-weight: bold; 
+
+color: #555; }
+
+        .guide-box { margin-top: 20px; font-size: 13px; line-height: 1.5; color: #555; }
+        .guide-item { margin-bottom: 15px; padding: 10px; background: #f9f9f9; border-left: 4px solid #ccc; 
+
+border-radius: 4px; }
+        .guide-title { display: block; font-weight: bold; margin-bottom: 5px; color: #333; }
+        .guide-hosp-border { border-left-color: #7f8c8d; }
+        .guide-assoc-border { border-left-color: #2980b9; background-color: #eaf2f8; }
+        .note-warning { color: #c0392b; font-weight: bold; margin-top: 5px; font-size: 14px; display: block; 
+
+padding: 0 15px 15px 15px; }
+
+        /* 估算提示文字 */
+        #estimate-msg { font-size: 13px; color: #17a2b8; margin-top: 5px; display: none; }
+
+        footer { text-align: center; padding: 20px; background: #eee; font-size: 12px; color: #aaa; margin-top: 
+
+auto; }
     </style>
 </head>
 <body>
@@ -70,7 +98,9 @@
 <div class="container">
     <header>
         <h2>
-            <img src="icon.png" style="width: 28px; height: 28px; border-radius: 50%;" onerror="this.style.display='none'">
+            <img src="icon.png" style="width: 28px; height: 28px; border-radius: 50%;" 
+
+onerror="this.style.display='none'">
             小兒抗生素速算
         </h2>
     </header>
@@ -78,142 +108,136 @@
     <div class="content">
         <div class="tab-group">
             <button class="tab-btn active" onclick="switchTab('susp')">💧 水劑 (Susp)</button>
-            <button class="tab-btn" onclick="switchTab('pow')">💊 磨粉 (Tab/Cap)</button>
+            <button class="tab-btn" onclick="switchTab('pow')">💊 磨粉 (Cap/Tab)</button>
         </div>
 
         <div class="form-group">
             <label for="drug">選擇藥品</label>
-            <select id="drug" onchange="resetResult()">
-                </select>
+            <select id="drug" onchange="hideResult()"></select>
+        </div>
+
+        <div class="form-group">
+            <label for="age">年齡 (歲)</label>
+            <div class="age-row">
+                <div class="age-input-group">
+                    <input type="number" id="age" placeholder="例如 5" inputmode="decimal">
+                </div>
+                <button class="estimate-btn" onclick="estimateWeight()">帶入標準體重</button>
+            </div>
+            <div id="estimate-msg"></div>
         </div>
 
         <div class="form-group">
             <label for="weight">體重 (kg)</label>
-            <input type="number" id="weight" placeholder="輸入體重" step="0.1" inputmode="decimal">
-        </div>
-
-        <div class="form-group" id="age-group">
-            <label for="age">年齡 (歲)</label>
-            <input type="number" id="age" placeholder="選填" inputmode="decimal">
+            <input type="number" id="weight" placeholder="輸入或自動估算" step="0.1" inputmode="decimal">
         </div>
 
         <button class="calc-btn" onclick="calculate()">計算建議劑量</button>
 
-        <div id="result-box" class="result-card">
-            <div class="result-main">
-                <div>
-                    <span class="res-value" id="res-dose">--</span>
-                    <span class="res-unit" id="res-unit">mL</span>
+        <div id="results-container">
+            <div id="res-card-hosp" class="result-card">
+                <div class="res-header res-hosp">
+                    <span>🏥 院內建議</span>
+                    <small>Hospital Std.</small>
                 </div>
-                <div class="res-freq-badge" id="res-freq">--</div>
-            </div>
-            
-            <div id="res-warning" class="note-text"></div>
+                <div class="res-body">
+                    <div><span class="res-val" id="val-hosp">--</span><span class="res-unit" id="unit-
 
-            <div class="guide-section">
-                <div class="guide-block guide-assoc">
-                    <span class="guide-title-assoc">★ 兒科醫學會建議劑量 (2018)</span>
-                    <span id="txt-assoc">--</span>
+hosp">mL</span></div>
+                    <div class="res-freq" id="freq-hosp">--</div>
                 </div>
-                
-                <div class="guide-block guide-hosp">
-                    <span class="guide-title-hosp">🏥 院內建議劑量</span>
-                    <span id="txt-hosp">--</span>
+            </div>
+
+            <div id="res-card-assoc" class="result-card" style="display:none;">
+                <div class="res-header res-assoc">
+                    <span>★ 兒科醫學會建議 (2018)</span>
+                    <small>High Dose</small>
+                </div>
+                <div class="res-body">
+                    <div><span class="res-val" id="val-assoc">--</span><span class="res-unit" id="unit-
+
+assoc">mL</span></div>
+                    <div class="res-freq" id="freq-assoc">--</div>
+                </div>
+                <span id="warning-assoc" class="note-warning"></span>
+            </div>
+
+            <div class="guide-box" id="guide-container" style="display:none;">
+                <div class="guide-item guide-assoc-border" id="text-assoc-box" style="display:none;">
+                    <span class="guide-title" style="color:#2980b9">兒科醫學會建議</span>
+                    <span id="text-assoc"></span>
+                </div>
+                <div class="guide-item guide-hosp-border">
+                    <span class="guide-title" style="color:#7f8c8d">院內建議劑量</span>
+                    <span id="text-hosp"></span>
                 </div>
             </div>
         </div>
     </div>
 
     <footer>
-        計算基準：依照兒科醫學會建議劑量優先
+        體重估算依據：衛福部生長曲線 (50th Percentile)
     </footer>
 </div>
 
 <script>
-    /* 資料結構說明:
-       calcBasis: 計算基準係數 (mg/kg/day) 或 'age'
-       conc: 濃度 (mg/mL) 或 規格 (mg/tab)
-       stdFreq: 計算用的建議頻次 (除數)
-       assocTxt: 醫學會建議文字
-       hospTxt: 院內建議文字
-    */
+    // 台灣兒童生長曲線 50th 百分位參考數據 (kg)
+    const growthChart = {
+        0.5: 7.5, // 6個月
+        1: 9.5,
+        2: 12.0,
+        3: 14.5,
+        4: 16.5,
+        5: 18.5,
+        6: 21.0,
+        7: 24.0,
+        8: 27.0,
+        9: 30.5,
+        10: 34.0,
+        11: 38.5,
+        12: 43.0
+    };
+
     const db = {
         susp: [
-            { 
-                id: 'aug', name: 'Augmentin (High Dose)', 
-                calcBasis: 90, // 依據醫學會 80-90，取高標 90 計算
-                conc: 80, // 400mg/5ml = 80mg/ml
-                stdFreq: 2, // BID
-                unit: 'mL',
-                assocTxt: '80-90 mg amoxicillin/kg/day，bid-tid（amoxicillin與clavulanate的比例以14：1為佳）(目前院內配方為 7:1)',
-                hospTxt: '25/3.6 mg/kg/day (mild)... 45/6.4 mg/kg/day (serious)...'
-            },
-            { 
-                id: 'baktar', name: 'Sulfacotrim (Baktar)', 
-                calcBasis: 10, // 依據醫學會 TMP 6-12，取平均 10 計算
-                conc: 8, // TMP 8mg/ml
-                stdFreq: 2, // BID
-                unit: 'mL',
-                assocTxt: 'trimethoprim 6-12 mg/kg/day bid',
-                hospTxt: '6 weeks to 5 months: 2.5 ml BID; 6 months to 5 years: 5 ml BID ; 6 to 12 years: 10 ml BID.'
-            },
-            { 
-                id: 'zith', name: 'Zithromax', 
-                calcBasis: 10, // 10mg/kg
-                conc: 40, 
-                stdFreq: 1, // QD
-                unit: 'mL',
-                assocTxt: '10 mg/kg/day QD (3 days) or 10 mg/kg D1 then 5 mg/kg D2-5',
-                hospTxt: 'Acute otitis media: 10 mg/kg/day x 3 days...'
-            },
-            { 
-                id: 'ulexin', name: 'Ulexin (Cephalexin)', 
-                calcBasis: 50, // 取嚴重感染平均
-                conc: 25, 
-                stdFreq: 4, // Q6H
-                unit: 'mL',
-                assocTxt: '25-50 mg/kg/day divided q6h',
-                hospTxt: '< 25kg: 25-50 mg/kg/day... > 25kg: 250mg Q6H'
-            }
+            { id: 'aug', name: 'Augmentin (Susp)', conc: 80, hospBasis: 45, hospFreq: 2, assocBasis: 90, 
+
+assocFreq: 2, unit: 'mL', hospText: '一般感染: 25 mg/kg BID; 嚴重: 45 mg/kg BID', assocText: '80-90 mg 
+
+amoxicillin/kg/day，bid-tid (建議比例14:1，院內為7:1)' },
+            { id: 'baktar', name: 'Sulfacotrim (Baktar)', conc: 8, isAgeBased: true, hospBasis: 0, hospFreq: 2, 
+
+assocBasis: 10, assocFreq: 2, unit: 'mL', hospText: '6週-5月: 2.5ml BID; 6月-5歲: 5ml BID; 6-12歲: 10ml BID', 
+
+assocText: '首選反應不佳時 TMP 6-12 mg/kg/day bid' },
+            { id: 'zith', name: 'Zithromax', conc: 40, hospBasis: 10, hospFreq: 1, assocBasis: null, unit: 'mL', 
+
+hospText: '中耳炎: 10 mg/kg (單次或3天); 肺炎: D1 10mg/kg, D2-5 5mg/kg', assocText: '' },
+            { id: 'ulexin', name: 'Ulexin (Cephalexin)', conc: 25, hospBasis: 50, hospFreq: 4, assocBasis: null, 
+
+unit: 'mL', hospText: '<25kg: 25-50 mg/kg/day div 4; >25kg: 250-500mg Q6H', assocText: '' }
         ],
         pow: [
-            { 
-                id: 'cexime', name: 'Cexime (Cefixime)', 
-                calcBasis: 10, // 醫學會 10mg/kg
-                conc: 100, // 100mg/cap
-                stdFreq: 2, // BID
-                unit: '顆',
-                assocTxt: '口服10 mg/kg/day，bid',
-                hospTxt: '> 45 kg: 400 mg/day... < 45kg: 8 mg/kg/day...'
-            },
-            { 
-                id: 'amox', name: 'Amoxicillin (High Dose)', 
-                calcBasis: 90, // 醫學會 80-90，取 90
-                conc: 500, // 500mg/cap
-                stdFreq: 2, // 預設 BID (比較好剝?) 或可選 TID
-                freqText: 'BID 或 TID',
-                unit: '顆',
-                assocTxt: '80-90 mg/kg/day，bid-tid',
-                hospTxt: 'children > 3 months(< 40 kg): 40-45 mg/kg...'
-            },
-            { 
-                id: 'ceflour', name: 'Ceflour (Cefuroxime)', 
-                calcBasis: 30, // 30mg/kg
-                conc: 250, // 250mg/tab
-                stdFreq: 2, // BID
-                unit: '顆',
-                assocTxt: '口服30 mg/kg/day，bid',
-                hospTxt: 'Children 3 months-12 yrs: 30 mg/kg/day...'
-            },
-            { 
-                id: 'acylo', name: 'Acylo (Acyclovir)', 
-                calcBasis: 80, // 水痘 20mg/kg/dose * 4 = 80
-                conc: 400, 
-                stdFreq: 4, // QID
-                unit: '顆',
-                assocTxt: 'Varicella: 20 mg/kg/dose QID x 5 days',
-                hospTxt: 'Varicella (<40kg): 20 mg/kg QID...'
-            }
+            { id: 'cexime', name: 'Cexime (Cefixime)', conc: 100, hospBasis: 8, hospFreq: 2, assocBasis: 10, 
+
+assocFreq: 2, unit: '顆', hospText: '<45kg: 8 mg/kg/day div 1-2; >45kg: 400 mg/day', assocText: '10 mg/kg/day，
+
+bid' },
+            { id: 'amox', name: 'Amoxicillin', conc: 500, hospBasis: 45, hospFreq: 3, assocBasis: 90, assocFreq: 
+
+2, unit: '顆', hospText: '<40kg: 40-45 mg/kg; >40kg: 500mg Q8H', assocText: '80-90 mg/kg/day，bid-tid' },
+            { id: 'ceflour', name: 'Ceflour (Cefuroxime)', conc: 250, hospBasis: 30, hospFreq: 2, assocBasis: 30, 
+
+assocFreq: 2, unit: '顆', hospText: '3 mo-12 yrs: 30 mg/kg/day bid', assocText: '30 mg/kg/day，bid' },
+            { id: 'acylo', name: 'Acylo (Acyclovir)', conc: 400, hospBasis: 80, hospFreq: 4, assocBasis: null, 
+
+unit: '顆', hospText: '水痘: 20 mg/kg QID (Max 800mg)', assocText: '' },
+            { id: 'doxy', name: 'Doxymycin', conc: 100, hospBasis: 4.4, hospFreq: 2, assocBasis: null, unit: 
+
+'顆', hospText: '<45kg: 4.4 mg/kg/day bid; >45kg: 100mg bid', assocText: '' },
+            { id: 'cino', name: 'Cinolone', conc: 250, hospBasis: 30, hospFreq: 2, assocBasis: null, unit: '顆', 
+
+hospText: '10-20 mg/kg Q12H (Max 750mg/dose)', assocText: '' }
         ]
     };
 
@@ -230,7 +254,7 @@
             btns[1].classList.add('active');
         }
         renderSelect();
-        resetResult();
+        hideResult();
     }
 
     function renderSelect() {
@@ -244,78 +268,147 @@
         });
     }
 
-    function resetResult() {
-        document.getElementById('result-box').style.display = 'none';
+    function hideResult() {
+        document.getElementById('results-container').querySelectorAll('.result-card').forEach(el => 
+
+el.style.display = 'none');
+        document.getElementById('guide-container').style.display = 'none';
+        document.getElementById('estimate-msg').style.display = 'none';
+    }
+
+    // ★ 體重估算功能
+    function estimateWeight() {
+        const age = parseFloat(document.getElementById('age').value);
+        const weightInput = document.getElementById('weight');
+        const msgDiv = document.getElementById('estimate-msg');
+        
+        if (!age || age <= 0) {
+            alert("請先輸入有效的年齡");
+            return;
+        }
+
+        let estWeight = 0;
+        let method = "";
+
+        // 1. 查表 (0.5歲 - 12歲)
+        // 為了方便，四捨五入到最近的整數或0.5
+        let lookupAge = age;
+        if (age < 1) lookupAge = 0.5; // 不滿1歲先對應到0.5
+        else lookupAge = Math.round(age);
+
+        if (growthChart[lookupAge]) {
+            estWeight = growthChart[lookupAge];
+            method = "台灣兒童生長曲線(50th)";
+        } else if (age > 12) {
+            // 2. 超過12歲用簡單公式粗估或提示
+            estWeight = (age * 2) + 8; // 舊式粗估公式
+            method = "簡易公式估算 (Age x 2 + 8)";
+        } else {
+             // 補間或其他狀況
+             estWeight = (age * 2) + 8; 
+             method = "簡易公式估算";
+        }
+
+        weightInput.value = estWeight;
+        msgDiv.innerText = `💡 已填入參考體重: ${estWeight} kg (${method})`;
+        msgDiv.style.display = 'block';
+        
+        // 如果是 Baktar，因為是看年齡，不需要特別動作，但如果是其他藥品，填入體重後使用者可以直接按計算
     }
 
     function calculate() {
         const weight = parseFloat(document.getElementById('weight').value);
+        const age = parseFloat(document.getElementById('age').value);
         const drugIdx = document.getElementById('drug').value;
         const drug = db[currentMode][drugIdx];
 
-        if (!weight || weight <= 0) {
-            alert('請輸入有效體重');
-            return;
-        }
+        if (!weight || weight <= 0) { alert('請輸入有效體重'); return; }
 
-        // --- 計算核心邏輯 ---
-        let singleDose = 0;
-        let warning = '';
-        let freqDisplay = '';
-
-        // 1. 每日總量 (mg) = 體重 * 醫學會建議係數
-        const dailyMg = weight * drug.calcBasis;
-
-        // 2. 轉換為 體積(mL) 或 顆數
-        const dailyUnitTotal = dailyMg / drug.conc;
-
-        // 3. 單次劑量
-        singleDose = dailyUnitTotal / drug.stdFreq;
-
-        // 4. 頻次顯示
-        freqDisplay = drug.freqText ? drug.freqText : (drug.stdFreq === 1 ? 'QD' : (drug.stdFreq === 2 ? 'BID' : (drug.stdFreq === 3 ? 'TID' : 'QID')));
-
-        // --- 特殊上限與檢查 ---
-        if (currentMode === 'pow') {
-            // 磨粉類檢查成人劑量上限
-            let isAdult = false;
-            if (drug.id === 'cexime' && weight > 45) { singleDose = 2; isAdult = true; } // 400mg/day = 4 caps -> 2 caps BID
-            if (drug.id === 'amox' && weight >= 40) { singleDose = 1; isAdult = true; freqDisplay='TID';} // 500mg TID
-            if (drug.id === 'ceflour' && (dailyMg > 1000)) { singleDose = 2; isAdult = true; } // Max 1g/day usually?
-            if (drug.id === 'acylo' && weight > 40) { singleDose = 2; isAdult = true; } // 800mg
-
-            if (isAdult) {
-                warning = '⚠️ 體重達成人標準，已顯示成人固定劑量';
-            }
-            // 磨粉顯示小數點後兩位
-            document.getElementById('res-dose').innerText = Number.isInteger(singleDose) ? singleDose : singleDose.toFixed(2);
-        } else {
-            // 水劑類
-            if (drug.id === 'ulexin' && weight > 25) {
-                singleDose = 10; // 250mg
-                warning = '⚠️ >25kg 建議固定 250mg (10mL)';
-            }
-            // Augmentin 7:1 警告
-            if (drug.id === 'aug') {
-                warning = '⚠️ 注意：依 90mg/kg 計算，但院內 Augmentin 比例為 7:1，Clavulanate 劑量較高，請留意腹瀉副作用。';
-            }
-
-            // 水劑顯示小數點後一位
-            document.getElementById('res-dose').innerText = singleDose.toFixed(1);
-        }
-
-        document.getElementById('res-unit').innerText = drug.unit;
-        document.getElementById('res-freq').innerText = freqDisplay;
-        document.getElementById('res-warning').innerText = warning;
+        // --- 1. 計算院內建議 ---
+        let hospDose = 0;
+        let hospNote = '';
         
-        // --- 填寫指引文字 ---
-        document.getElementById('txt-assoc').innerText = drug.assocTxt;
-        document.getElementById('txt-hosp').innerText = drug.hospTxt;
+        if (drug.id === 'baktar') {
+            if (isNaN(age)) { alert('Baktar 需輸入年齡'); return; }
+            if (age < 0.5) hospDose = 2.5;
+            else if (age <= 5) hospDose = 5;
+            else hospDose = 10;
+        } 
+        else if (drug.id === 'ulexin' && weight > 25) {
+            hospDose = 10; hospNote = '(>25kg固定)';
+        }
+        else if (currentMode === 'pow') {
+            let dailyMg = weight * drug.hospBasis;
+            let isAdult = false;
+            // 磨粉上限判斷
+            if (drug.id === 'cexime' && weight > 45) { dailyMg = 400; isAdult = true; }
+            if (drug.id === 'amox' && weight >= 40) { dailyMg = 1500; isAdult = true; } 
+            if (drug.id === 'doxy' && weight > 45) { dailyMg = 200; isAdult = true; }
+            if (drug.id === 'acylo' && weight > 40) { dailyMg = 3200; isAdult = true; }
 
-        document.getElementById('result-box').style.display = 'block';
+            hospDose = (dailyMg / drug.hospFreq) / drug.conc;
+            if (isAdult) hospNote = '(成人劑量)';
+        }
+        else {
+            const dailyMg = weight * drug.hospBasis;
+            hospDose = (dailyMg / drug.conc) / drug.hospFreq;
+        }
+
+        const hospDoseText = currentMode === 'pow' ? (Number.isInteger(hospDose) ? hospDose : hospDose.toFixed
+
+(2)) : hospDose.toFixed(1);
+        document.getElementById('val-hosp').innerText = hospDoseText + (hospNote ? "*" : "");
+        document.getElementById('unit-hosp').innerText = drug.unit;
+        
+        let fTextH = drug.hospFreq === 1 ? 'QD' : (drug.hospFreq === 2 ? 'BID' : (drug.hospFreq === 3 ? 'TID' : 
+
+'QID'));
+        if (drug.id === 'ulexin') fTextH = 'Q6H';
+        document.getElementById('freq-hosp').innerText = fTextH;
+        document.getElementById('res-card-hosp').style.display = 'block';
+
+        // --- 2. 計算醫學會建議 ---
+        const assocCard = document.getElementById('res-card-assoc');
+        const assocBox = document.getElementById('text-assoc-box');
+        
+        if (drug.assocBasis) {
+            const dailyMgAssoc = weight * drug.assocBasis;
+            let assocDose = (dailyMgAssoc / drug.conc) / drug.assocFreq;
+            
+            if (currentMode === 'pow' && drug.id === 'cexime' && weight > 45) assocDose = 2; 
+            
+            const assocDoseText = currentMode === 'pow' ? (Number.isInteger(assocDose) ? assocDose : 
+
+assocDose.toFixed(2)) : assocDose.toFixed(1);
+            
+            document.getElementById('val-assoc').innerText = assocDoseText;
+            document.getElementById('unit-assoc').innerText = drug.unit;
+            
+            let fTextA = drug.assocFreq === 1 ? 'QD' : (drug.assocFreq === 2 ? 'BID' : (drug.assocFreq === 3 ? 
+
+'TID' : 'QID'));
+            document.getElementById('freq-assoc').innerText = fTextA;
+
+            if (drug.id === 'aug') {
+                document.getElementById('warning-assoc').innerText = "⚠️ 依 90mg/kg 計算。院內配方比例 7:1，請
+
+留意腹瀉副作用。";
+            } else {
+                document.getElementById('warning-assoc').innerText = "";
+            }
+
+            assocCard.style.display = 'block';
+            assocBox.style.display = 'block';
+            document.getElementById('text-assoc').innerText = drug.assocText;
+        } else {
+            assocCard.style.display = 'none';
+            assocBox.style.display = 'none';
+        }
+
+        document.getElementById('guide-container').style.display = 'block';
+        document.getElementById('text-hosp').innerText = drug.hospText + (hospNote ? " " + hospNote : "");
     }
 
-    // 初始化
     renderSelect();
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); });
