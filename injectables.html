@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>小兒針劑抗生素速算</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#27ae60">
+    <link rel="apple-touch-icon" href="icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <style>
+        body { font-family: "Microsoft JhengHei", -apple-system, sans-serif; background-color: #f4f7f6; margin: 0; padding: 0; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background: white; min-height: 100vh; display: flex; flex-direction: column; }
+        
+        /* 綠色系代表針劑/嚴肅 */
+        header { background: #27ae60; color: white; padding: 15px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        header h2 { margin: 0; font-size: 18px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+        .content { padding: 15px; flex: 1; }
+
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #2c3e50; font-size: 15px; }
+        select, input { width: 100%; padding: 12px; border: 1px solid #bdc3c7; border-radius: 8px; font-size: 16px; background: #fff; box-sizing: border-box; }
+        select:focus, input:focus { border-color: #27ae60; outline: none; }
+
+        .calc-btn { width: 100%; padding: 14px; background: #e67e22; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 0 #d35400; }
+        .calc-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #d35400; }
+
+        /* 結果卡片 */
+        .result-card { background-color: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 0; margin-top: 25px; display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.05); overflow: hidden; }
+        .res-header { padding: 10px 15px; font-weight: bold; color: white; background-color: #27ae60; display: flex; justify-content: space-between; align-items: center; }
+        
+        .res-body { padding: 15px; }
+        .res-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px dashed #eee; padding-bottom: 10px; }
+        .res-label { font-size: 14px; color: #7f8c8d; }
+        .res-val { font-size: 20px; font-weight: bold; color: #333; }
+        .res-unit { font-size: 14px; color: #666; }
+
+        /* 警示區 */
+        .alert-box { background: #fff3cd; border: 1px solid #ffeeba; color: #856404; padding: 10px; margin: 15px; border-radius: 5px; font-size: 14px; display: none; }
+        .danger-box { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 10px; margin: 15px; border-radius: 5px; font-size: 14px; display: none; font-weight: bold; }
+
+        /* 仿單說明 */
+        .guide-box { margin-top: 20px; font-size: 13px; line-height: 1.6; color: #555; background: #f9f9f9; padding: 15px; border-radius: 8px; border-left: 5px solid #27ae60; }
+        .guide-title { font-weight: bold; color: #27ae60; margin-bottom: 5px; display: block; font-size: 14px; }
+
+        footer { text-align: center; padding: 20px; background: #eee; font-size: 12px; color: #aaa; margin-top: auto; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h2>💉 小兒針劑抗生素速算</h2>
+    </header>
+
+    <div class="content">
+        <div class="form-group">
+            <label for="drug">選擇注射藥品 (Vial/Amp)</label>
+            <select id="drug" onchange="hideResult()">
+                </select>
+        </div>
+
+        <div class="form-group">
+            <label for="weight">體重 (kg)</label>
+            <input type="number" id="weight" placeholder="輸入體重" step="0.1" inputmode="decimal">
+        </div>
+
+        <div class="form-group">
+            <label for="age">年齡 (歲)</label>
+            <input type="number" id="age" placeholder="選填 (部分藥品需判斷年齡)" inputmode="decimal">
+        </div>
+
+        <button class="calc-btn" onclick="calculate()">計算建議劑量</button>
+
+        <div id="result-card" class="result-card">
+            <div class="res-header">
+                <span>建議劑量範圍</span>
+                <small id="res-drug-name">Drug Name</small>
+            </div>
+            
+            <div class="res-body">
+                <div class="res-row">
+                    <span class="res-label">計算標準</span>
+                    <span class="res-val" style="font-size:16px" id="res-basis">--</span>
+                </div>
+
+                <div class="res-row">
+                    <span class="res-label">建議單次劑量</span>
+                    <div>
+                        <span class="res-val" id="res-single">--</span>
+                        <span class="res-unit">mg</span>
+                    </div>
+                </div>
+
+                <div class="res-row">
+                    <span class="res-label">每日總量</span>
+                    <div>
+                        <span class="res-val" id="res-daily">--</span>
+                        <span class="res-unit">mg/day</span>
+                    </div>
+                </div>
+
+                <div class="res-row" style="border-bottom:none;">
+                    <span class="res-label">建議頻次</span>
+                    <span class="res-val" style="color:#2980b9" id="res-freq">--</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="danger-msg" class="danger-box"></div>
+        <div id="alert-msg" class="alert-box"></div>
+
+        <div id="guide-box" class="guide-box" style="display:none;">
+            <span class="guide-title">📖 仿單與臨床建議</span>
+            <div id="guide-text"></div>
+        </div>
+
+    </div>
+
+    <footer>
+        資料來源：藥品仿單與臨床指引整理 (2025/12/26)
+    </footer>
+</div>
+
+<script>
+    /* Data Logic:
+       min/max: mg/kg per unit
+       unit: 'day' (daily total) or 'dose' (per single dose)
+       freq: text string
+    */
+    const drugs = [
+        { group: 'Penicillins', id: 'amp', name: 'Ampicillin', min: 25, max: 60, unit: 'day', freq: 'Q6H', desc: '一般兒童(<20kg)：25-60 mg/kg/day。腦膜炎：100-200 mg/kg/day。新生兒可用。' },
+        { group: 'Penicillins', id: 'oxa', name: 'Oxacillin', min: 50, max: 100, unit: 'day', freq: 'Q6H', desc: '<40kg：50 mg/kg/day，嚴重可達 100 mg/kg/day。早產/新生兒：25 mg/kg/day。' },
+        { group: 'Penicillins', id: 'unasyn', name: 'Unasyn (Amp/Sulb)', min: 150, max: 150, unit: 'day', freq: 'Q6H-Q8H', desc: '孩童/嬰兒：150 mg/kg/day (含Amp 100 + Sulb 50)，分3-4次。新生兒(7天內)：75 mg/kg/day。' },
+        { group: 'Penicillins', id: 'aug_iv', name: 'Augmentin IV', min: 30, max: 30, unit: 'dose', freq: 'Q8H', desc: '3個月-12歲：30 mg/kg/dose Q8H。0-3個月：30 mg/kg/dose Q12H。' },
+        
+        { group: 'Cephalosporins', id: 'cefazolin', name: 'Cefazolin (1代)', min: 20, max: 50, unit: 'day', freq: 'Q8H', desc: '兒童：20-50 mg/kg/day (重症可達 100 mg/kg/day)。' },
+        { group: 'Cephalosporins', id: 'cefmetazole', name: 'Cefmetazole (2代)', min: 25, max: 100, unit: 'day', freq: 'Q8H', desc: '兒童：25-100 mg/kg/day 分次給予。' },
+        { group: 'Cephalosporins', id: 'brosym', name: 'Brosym (Cefoper/Sulb)', min: 40, max: 80, unit: 'day', freq: 'Q6H-Q12H', desc: '40-80 mg/kg/day (兩成分總量)，分2-4次。嚴重可達 160 mg/kg/day。' },
+        { group: 'Cephalosporins', id: 'ceftazidime', name: 'Ceftazidime (3代)', min: 30, max: 100, unit: 'day', freq: 'Q8H', desc: '>2個月：30-100 mg/kg/day (分2-3次)。腦膜炎可達 150 mg/kg/day (Max 6g)。新生兒：25-60 mg/kg/day。' },
+        { group: 'Cephalosporins', id: 'ceftriaxone', name: 'Ceftriaxone (Rocephin)', min: 20, max: 80, unit: 'day', freq: 'QD-BID', danger: '🈲 禁用於高膽紅素新生兒/早產兒。🈲 不可與含鈣溶液(Ringer)併用(致死風險)。', desc: '15天-12歲：20-80 mg/kg/day。新生兒(<14天)：20-50 mg/kg/day。' },
+        { group: 'Cephalosporins', id: 'zinforo', name: 'Zinforo (Ceftaroline)', min: 8, max: 12, unit: 'dose', freq: 'Q8H', note: '⚠️ 需依年齡: 2月-2歲 8mg/kg; 2歲-12歲 12mg/kg', desc: '5代頭孢。2月-2歲：8 mg/kg Q8H。2歲-12歲：12 mg/kg Q8H。青少年：600 mg Q12H。' },
+        { group: 'Cephalosporins', id: 'zavicefta', name: 'Zavicefta (Caz/Avi)', min: 40, max: 50, unit: 'dose', freq: 'Q8H', note: '⚠️ 需依年齡: 3-6個月 40mg/kg; 6個月以上 50mg/kg', desc: '6月-18歲：50 mg/kg/dose Q8H。3月-6月：40 mg/kg/dose Q8H。' },
+
+        { group: 'Carbapenems', id: 'mepem', name: 'Meropenem', min: 10, max: 20, unit: 'dose', freq: 'Q8H', desc: '>3個月：10-20 mg/kg Q8H。腦膜炎/嚴重：40 mg/kg Q8H。' },
+        { group: 'Carbapenems', id: 'tienam', name: 'Imipenem/Cilastatin', min: 15, max: 15, unit: 'dose', freq: 'Q6H', desc: '>3個月且<40kg：15 mg/kg Q6H (Max 2g/day)。❌ 不建議用於腦膜炎。' },
+
+        { group: 'Anti-MRSA', id: 'vanco', name: 'Vancomycin', min: 40, max: 40, unit: 'day', freq: 'Q6H-Q8H', desc: '兒童：40 mg/kg/day。新生兒起始 10-15 mg/kg。需TDM。' },
+        { group: 'Anti-MRSA', id: 'teicoplanin', name: 'Teicoplanin', min: 6, max: 10, unit: 'dose', freq: 'QD (Loading Q12H)', desc: '>2個月：Loading 10 mg/kg Q12H x3。Maintenance 6-10 mg/kg QD。' },
+        { group: 'Anti-MRSA', id: 'cubicin', name: 'Daptomycin', min: 5, max: 12, unit: 'dose', freq: 'QD', danger: '🈲 嚴禁使用於 < 1歲嬰兒 (神經肌肉風險)', desc: '1-6歲：9-12 mg/kg QD。7-17歲：5-7 mg/kg QD。' },
+        { group: 'Anti-MRSA', id: 'zyvox', name: 'Linezolid', min: 10, max: 10, unit: 'dose', freq: 'Q8H', desc: '出生-11歲：10 mg/kg Q8H。12歲以上：600 mg Q12H。' },
+
+        { group: 'Others', id: 'gentamicin', name: 'Gentamicin', min: 2, max: 2.5, unit: 'dose', freq: 'Q8H', note: '計算以 6-7.5 mg/kg/day 分三劑為例', desc: '小兒：2.0-2.5 mg/kg Q8H (Total 6-7.5 mg/kg/day)。具耳/腎毒性。' },
+        { group: 'Others', id: 'amikacin', name: 'Amikacin', min: 15, max: 15, unit: 'day', freq: 'QD-BID', desc: '兒童：15 mg/kg/day。新生兒：起始 10mg/kg 接續 7.5mg/kg Q12H。' },
+        { group: 'Others', id: 'cipro', name: 'Ciprofloxacin', min: 6, max: 10, unit: 'dose', freq: 'Q8H', danger: '⚠️ 限制使用：兒童可能引起關節軟骨病變', desc: '限用於複雜性UTI(6-10 mg/kg Q8H)或囊腫纖維化(10 mg/kg Q8H)或炭疽病。' },
+        { group: 'Others', id: 'levo', name: 'Levofloxacin', min: 0, max: 0, unit: 'day', freq: '--', danger: '🈲 仿單列為兒童禁忌 (關節病變)', desc: '安全性未確立，依仿單屬禁忌。僅在無藥可用且利大於弊時考慮。' }
+    ];
+
+    function init() {
+        const select = document.getElementById('drug');
+        let currentGroup = '';
+        drugs.forEach((d, idx) => {
+            if (d.group !== currentGroup) {
+                const grp = document.createElement('optgroup');
+                grp.label = d.group;
+                select.appendChild(grp);
+                currentGroup = d.group;
+            }
+            const opt = document.createElement('option');
+            opt.value = idx;
+            opt.text = d.name;
+            select.appendChild(opt);
+        });
+    }
+
+    function hideResult() {
+        document.getElementById('result-card').style.display = 'none';
+        document.getElementById('danger-msg').style.display = 'none';
+        document.getElementById('alert-msg').style.display = 'none';
+        document.getElementById('guide-box').style.display = 'none';
+    }
+
+    function calculate() {
+        const weight = parseFloat(document.getElementById('weight').value);
+        const age = parseFloat(document.getElementById('age').value);
+        const drugIdx = document.getElementById('drug').value;
+        const drug = drugs[drugIdx];
+
+        if (!weight || weight <= 0) { alert('請輸入有效體重'); return; }
+
+        // 特殊藥品邏輯
+        let calcMin = drug.min;
+        let calcMax = drug.max;
+        
+        // Ceftaroline (Zinforo)
+        if (drug.id === 'zinforo') {
+            if (!age && age !== 0) { alert('Zinforo 請輸入年齡'); return; }
+            if (age < 0.16) { alert('Zinforo < 2個月不建議使用'); return; } // 2m = 0.16y
+            if (age < 2) { calcMin = 8; calcMax = 8; }
+            else if (age <= 12) { calcMin = 12; calcMax = 12; }
+            else { alert('12歲以上建議成人劑量'); return; }
+        }
+        // Zavicefta
+        if (drug.id === 'zavicefta') {
+            if (!age && age !== 0) { alert('Zavicefta 請輸入年齡'); return; }
+            if (age < 0.25) { alert('Zavicefta < 3個月不建議使用'); return; } // 3m = 0.25y
+            if (age < 0.5) { calcMin = 40; calcMax = 40; } // 3-6m
+            else { calcMin = 50; calcMax = 50; } // >6m
+        }
+        // Daptomycin
+        if (drug.id === 'cubicin') {
+            if (age < 1) { 
+                document.getElementById('danger-msg').innerText = drug.danger;
+                document.getElementById('danger-msg').style.display = 'block';
+                return; // 禁止計算
+            }
+            if (age <= 6) { calcMin = 9; calcMax = 12; }
+            else { calcMin = 5; calcMax = 7; }
+        }
+
+        // 開始計算
+        let dailyMin = 0, dailyMax = 0;
+        let singleMin = 0, singleMax = 0;
+        let basisText = "";
+
+        // 判斷藥品是以 "每劑" 還是 "每天" 為單位
+        let freqNum = 1;
+        if (drug.freq.includes('Q6H')) freqNum = 4;
+        else if (drug.freq.includes('Q8H')) freqNum = 3;
+        else if (drug.freq.includes('Q12H') || drug.freq.includes('BID')) freqNum = 2;
+        else if (drug.freq.includes('QD')) freqNum = 1;
+
+        if (drug.unit === 'day') {
+            // 基礎是 mg/kg/day
+            dailyMin = weight * calcMin;
+            dailyMax = weight * calcMax;
+            singleMin = dailyMin / freqNum;
+            singleMax = dailyMax / freqNum;
+            basisText = `${calcMin}-${calcMax} mg/kg/day`;
+        } else {
+            // 基礎是 mg/kg/dose
+            singleMin = weight * calcMin;
+            singleMax = weight * calcMax;
+            dailyMin = singleMin * freqNum;
+            dailyMax = singleMax * freqNum;
+            basisText = `${calcMin}-${calcMax} mg/kg/dose`;
+        }
+
+        // 渲染結果
+        document.getElementById('res-drug-name').innerText = drug.name;
+        document.getElementById('res-basis').innerText = basisText;
+        
+        // 格式化數字
+        const fmt = (n) => Number.isInteger(n) ? n : n.toFixed(1);
+        document.getElementById('res-single').innerText = `${fmt(singleMin)} ~ ${fmt(singleMax)}`;
+        document.getElementById('res-daily').innerText = `${fmt(dailyMin)} ~ ${fmt(dailyMax)}`;
+        document.getElementById('res-freq').innerText = drug.freq;
+
+        document.getElementById('result-card').style.display = 'block';
+
+        // 顯示警語
+        const dangerDiv = document.getElementById('danger-msg');
+        if (drug.danger) {
+            dangerDiv.innerText = drug.danger;
+            dangerDiv.style.display = 'block';
+        } else {
+            dangerDiv.style.display = 'none';
+        }
+
+        const alertDiv = document.getElementById('alert-msg');
+        if (drug.note) {
+            alertDiv.innerText = drug.note;
+            alertDiv.style.display = 'block';
+        } else {
+            alertDiv.style.display = 'none';
+        }
+
+        // 顯示仿單
+        document.getElementById('guide-text').innerText = drug.desc;
+        document.getElementById('guide-box').style.display = 'block';
+    }
+
+    // Run Init
+    init();
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); });
+    }
+</script>
+
+</body>
+</html>
