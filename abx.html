@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>小兒抗生素速算 (醫學會版)</title>
+)    )    <title>小兒抗生素劑量速算 (兼成人克流感)</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2980b9">
@@ -32,35 +32,58 @@
         select, input { width: 100%; padding: 12px; border: 1px solid #bdc3c7; border-radius: 8px; font-size: 16px; background: #fff; box-sizing: border-box; }
         select:focus, input:focus { border-color: #3498db; outline: none; }
 
-        /* 特殊樣式：年齡與估算按鈕併排 */
+        /* Tamiflu 專用樣式 */
+        .tamiflu-age-opt { display: none; flex-direction: row; gap: 5px; margin-bottom: 15px; }
+        .tf-btn { flex: 1; padding: 10px 2px; border: 1px solid #17a2b8; background: white; color: #17a2b8; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; }
+        .tf-btn.active { background: #17a2b8; color: white; }
+
+        /* 腎功能區塊 */
+        #tamiflu-renal-block { display: none; margin-top: 20px; padding-top: 15px; border-top: 1px dashed #ccc; }
+
+        .renal-calculator { background: #eaf2f8; padding: 15px; border-radius: 8px; border: 1px solid #aed6f1; margin-bottom: 15px; display: none; }
+        .renal-calc-title { font-size: 14px; font-weight: bold; color: #2980b9; margin-bottom: 10px; border-bottom: 1px solid #d6eaf8; padding-bottom: 5px; }
+        .calc-row { display: flex; gap: 10px; }
+        .small-btn { padding: 8px 12px; background: #3498db; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; }
+
         .age-row { display: flex; gap: 10px; align-items: flex-end; }
         .age-input-group { flex: 1; }
         .estimate-btn { padding: 12px 10px; background-color: #17a2b8; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; height: 46px; white-space: nowrap; }
-        
+        #estimate-msg { font-size: 13px; color: #17a2b8; margin-top: 5px; display: none; }
+
         .calc-btn { width: 100%; padding: 14px; background: #e67e22; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 0 #d35400; }
         .calc-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #d35400; }
 
         .result-card { background-color: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 0; margin-top: 25px; display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.05); overflow: hidden; }
         .res-header { padding: 10px 15px; font-weight: bold; color: white; display: flex; justify-content: space-between; align-items: center; }
+        .res-body { padding: 15px; display: flex; align-items: baseline; justify-content: space-between; }
+        
         .res-hosp { background-color: #7f8c8d; }
         .res-assoc { background-color: #2980b9; }
+        .res-tamiflu { background-color: #d35400; }
 
-        .res-body { padding: 15px; display: flex; align-items: baseline; justify-content: space-between; }
         .res-val { font-size: 32px; font-weight: bold; color: #333; }
         .res-unit { font-size: 16px; color: #666; margin-left: 5px; }
         .res-freq { background: #eee; padding: 4px 10px; border-radius: 15px; font-size: 14px; font-weight: bold; color: #555; }
+
+        .note-warning { color: #c0392b; font-weight: bold; margin-top: 5px; font-size: 14px; display: block; padding: 0 15px 15px 15px; }
+        .renal-badge { background: #e74c3c; color: white; font-size: 12px; padding: 2px 6px; border-radius: 4px; margin-left: 5px; vertical-align: middle; display: none; }
 
         .guide-box { margin-top: 20px; font-size: 13px; line-height: 1.5; color: #555; }
         .guide-item { margin-bottom: 15px; padding: 10px; background: #f9f9f9; border-left: 4px solid #ccc; border-radius: 4px; }
         .guide-title { display: block; font-weight: bold; margin-bottom: 5px; color: #333; }
         .guide-hosp-border { border-left-color: #7f8c8d; }
         .guide-assoc-border { border-left-color: #2980b9; background-color: #eaf2f8; }
-        .note-warning { color: #c0392b; font-weight: bold; margin-top: 5px; font-size: 14px; display: block; padding: 0 15px 15px 15px; }
 
-        /* 估算提示文字 */
-        #estimate-msg { font-size: 13px; color: #17a2b8; margin-top: 5px; display: none; }
+        .info-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+        .info-table th, .info-table td { border: 1px solid #bdc3c7; padding: 8px; text-align: left; vertical-align: middle; }
+        .info-table th { background-color: #ecf0f1; text-align: center; font-weight: bold; color: #2c3e50; }
+        .info-table tr:nth-child(even) { background-color: #f8f9fa; }
+        .info-table td small { display: block; color: #7f8c8d; margin-top: 4px; font-size: 12px; }
 
-        footer { text-align: center; padding: 20px; background: #eee; font-size: 12px; color: #aaa; margin-top: auto; }
+        .tamiflu-ref-section { margin-top: 25px; display: none; }
+        .ref-title { font-size: 15px; font-weight: bold; color: #d35400; border-left: 4px solid #d35400; padding-left: 8px; margin-bottom: 10px; }
+
+        footer { text-align: center; padding: 20px; background: #eee; font-size: 12px; color: #aaa; margin-top: auto; line-height: 1.6; }
     </style>
 </head>
 <body>
@@ -69,7 +92,7 @@
     <header>
         <h2>
             <img src="icon.png" style="width: 28px; height: 28px; border-radius: 50%;" onerror="this.style.display='none'">
-            小兒抗生素速算
+            小兒/成人克流感速算
         </h2>
     </header>
 
@@ -81,10 +104,21 @@
 
         <div class="form-group">
             <label for="drug">選擇藥品</label>
-            <select id="drug" onchange="hideResult()"></select>
+            <select id="drug" onchange="handleDrugChange()"></select>
         </div>
 
-        <div class="form-group">
+        <div id="tamiflu-mode-select" class="tamiflu-age-opt">
+            <button class="tf-btn" onclick="setTamifluMode('infant')" id="btn-infant">未滿 1 歲</button>
+            <button class="tf-btn active" onclick="setTamifluMode('child')" id="btn-child">1 歲以上</button>
+            <button class="tf-btn" onclick="setTamifluMode('adult')" id="btn-adult">超過13歲與成人</button>
+        </div>
+
+        <div class="form-group" id="weight-group">
+            <label for="weight">體重 (kg)</label>
+            <input type="number" id="weight" placeholder="輸入或自動估算" step="0.1" inputmode="decimal">
+        </div>
+
+        <div class="form-group" id="age-group">
             <label for="age">年齡 (歲)</label>
             <div class="age-row">
                 <div class="age-input-group">
@@ -95,9 +129,32 @@
             <div id="estimate-msg"></div>
         </div>
 
-        <div class="form-group">
-            <label for="weight">體重 (kg)</label>
-            <input type="number" id="weight" placeholder="輸入或自動估算" step="0.1" inputmode="decimal">
+        <div id="tamiflu-renal-block">
+            <div class="form-group">
+                <label for="egfr-input">
+                    腎功能 (eGFR) 
+                    <span class="renal-badge" id="renal-status-badge"></span>
+                </label>
+                <input type="number" id="egfr-input" placeholder="輸入 eGFR (預設 > 60)" oninput="checkRenalStatus()">
+                <div id="egfr-hint" style="font-size: 13px; color: #555; margin-top: 8px; background: #f0f0f0; padding: 8px; border-radius: 5px;">
+                    * 兒科適用 Bedside Schwartz 公式：<br>
+                    <span style="font-weight:bold; color:#2980b9; display:block; margin-top:4px;">eGFR = 0.413 × 身高 (cm) / Cr (mg/dL)</span>
+                </div>
+            </div>
+
+            <div id="cr-calc-trigger" style="margin-bottom: 15px;">
+                <span style="font-size:13px; color:#3498db; cursor:pointer; text-decoration:underline;" onclick="toggleCrCalc()">
+                    🛠️ 只有肌酸酐 (Cr)? 點此換算 (限兒童)
+                </span>
+            </div>
+            <div id="cr-calculator" class="renal-calculator">
+                <div class="renal-calc-title">兒童 eGFR 換算器 (Schwartz)</div>
+                <div class="calc-row">
+                    <input type="number" id="calc-height" placeholder="身高 (cm)">
+                    <input type="number" id="calc-cr" placeholder="Cr (mg/dL)">
+                </div>
+                <button class="small-btn" style="margin-top:10px; width:100%;" onclick="calcSchwartz()">計算並帶入 eGFR</button>
+            </div>
         </div>
 
         <button class="calc-btn" onclick="calculate()">計算建議劑量</button>
@@ -126,6 +183,43 @@
                 <span id="warning-assoc" class="note-warning"></span>
             </div>
 
+            <div id="res-card-tamiflu" class="result-card" style="display:none;">
+                <div class="res-header res-tamiflu">
+                    <span id="tf-header-title">🦠 克流感調配 (50mL)</span>
+                    <small>Tamiflu</small>
+                </div>
+                
+                <div class="res-body" style="display:block;">
+                    <div id="tf-kid-view">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <span class="res-val" id="val-tamiflu">--</span>
+                                <span class="res-unit">顆 (75mg)</span>
+                            </div>
+                            <div class="res-freq" id="freq-tamiflu">BID x 5天</div>
+                        </div>
+                        <div style="margin-top:10px; font-size:14px; color:#555; background:#f0f0f0; padding:8px; border-radius:5px;">
+                            作法: 剝入 50mL 水中<br>
+                            用法: 每次喝 <strong>5 mL</strong> (單次劑量 <span id="dose-tamiflu-mg">--</span> mg)
+                        </div>
+                    </div>
+
+                    <div id="tf-adult-view" style="display:none;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <span class="res-val" id="val-tamiflu-adult">--</span>
+                                <span class="res-unit">顆 / 次</span>
+                            </div>
+                            <div class="res-freq" id="freq-tamiflu-adult">--</div>
+                        </div>
+                        <div style="margin-top:10px; font-size:15px; color:#555;">
+                            (單次劑量: <span id="dose-tamiflu-adult-mg">--</span> mg)
+                        </div>
+                    </div>
+                </div>
+                <span id="warning-tamiflu" class="note-warning"></span>
+            </div>
+
             <div class="guide-box" id="guide-container" style="display:none;">
                 <div class="guide-item guide-assoc-border" id="text-assoc-box" style="display:none;">
                     <span class="guide-title" style="color:#2980b9">兒科醫學會建議</span>
@@ -136,30 +230,60 @@
                     <span id="text-hosp"></span>
                 </div>
             </div>
+            
+            <div id="tamiflu-ref-container" class="tamiflu-ref-section">
+                <div id="tf-ref-child">
+                    <div class="ref-title">📊 體重與建議劑量對照表 (1歲以上)</div>
+                    <table class="info-table" style="margin-bottom: 25px;">
+                        <thead><tr><th>體重</th><th>建議劑量 (BID)</th></tr></thead>
+                        <tbody>
+                            <tr><td>≤ 15 kg</td><td>30 mg</td></tr>
+                            <tr><td>> 15 - 23 kg</td><td>45 mg</td></tr>
+                            <tr><td>> 23 - 40 kg</td><td>60 mg</td></tr>
+                            <tr><td>> 40 kg</td><td>75 mg</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="tf-ref-infant" style="display:none;">
+                    <div class="ref-title">👶 嬰兒建議劑量對照表 (未滿1歲)</div>
+                    <table class="info-table" style="margin-bottom: 25px;">
+                        <thead><tr><th>年齡</th><th>建議劑量 (BID)</th></tr></thead>
+                        <tbody><tr><td>0 - 12 個月</td><td>3 mg / kg</td></tr></tbody>
+                    </table>
+                </div>
+                <div id="tf-ref-adult" style="display:none;">
+                    <div class="ref-title">🧑 成人標準劑量</div>
+                    <table class="info-table" style="margin-bottom: 25px;">
+                        <thead><tr><th>對象</th><th>建議劑量</th></tr></thead>
+                        <tbody><tr><td>成人 / 13歲以上</td><td>75 mg BID</td></tr></tbody>
+                    </table>
+                </div>
+
+                <div class="ref-title">⚠️ 腎功能劑量調整 (Oseltamivir)</div>
+                <table class="info-table">
+                    <thead><tr><th style="width: 40%">CrCl / 模式</th><th>建議劑量</th></tr></thead>
+                    <tbody>
+                        <tr><td>> 60 mL/min</td><td>不需調整劑量</td></tr>
+                        <tr><td>30-60 mL/min</td><td>30 mg BID<br><small>為期 5 天</small></td></tr>
+                        <tr><td>10-30 mL/min</td><td>30 mg QD<br><small>為期 5 天</small></td></tr>
+                        <tr><td>血液透析</td><td>透析後 30 mg<br><small>可透析前給藥</small></td></tr>
+                        <tr><td>腹膜透析</td><td>30 mg 單次劑量</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <footer>
-        體重估算依據：衛福部生長曲線 (50th Percentile)
+        本頁面資訊僅供專業人參考,非專業人士勿自行調整用藥<br>
+        修改日期 20251230
     </footer>
 </div>
 
 <script>
-    // 台灣兒童生長曲線 50th 百分位參考數據 (kg)
     const growthChart = {
-        0.5: 7.5, // 6個月
-        1: 9.5,
-        2: 12.0,
-        3: 14.5,
-        4: 16.5,
-        5: 18.5,
-        6: 21.0,
-        7: 24.0,
-        8: 27.0,
-        9: 30.5,
-        10: 34.0,
-        11: 38.5,
-        12: 43.0
+        0.5: 7.5, 1: 9.5, 2: 12.0, 3: 14.5, 4: 16.5, 5: 18.5, 6: 21.0, 
+        7: 24.0, 8: 27.0, 9: 30.5, 10: 34.0, 11: 38.5, 12: 43.0
     };
 
     const db = {
@@ -170,16 +294,18 @@
             { id: 'ulexin', name: 'Ulexin (Cephalexin)', conc: 25, hospBasis: 50, hospFreq: 4, assocBasis: null, unit: 'mL', hospText: '<25kg: 25-50 mg/kg/day div 4; >25kg: 250-500mg Q6H', assocText: '' }
         ],
         pow: [
-            { id: 'cexime', name: 'Cexime (Cefixime)', conc: 100, hospBasis: 8, hospFreq: 2, assocBasis: 10, assocFreq: 2, unit: '顆', hospText: '<45kg: 8 mg/kg/day div 1-2; >45kg: 400 mg/day', assocText: '10 mg/kg/day，bid' },
-            { id: 'amox', name: 'Amoxicillin', conc: 500, hospBasis: 45, hospFreq: 3, assocBasis: 90, assocFreq: 2, unit: '顆', hospText: '<40kg: 40-45 mg/kg; >40kg: 500mg Q8H', assocText: '80-90 mg/kg/day，bid-tid' },
-            { id: 'ceflour', name: 'Ceflour (Cefuroxime)', conc: 250, hospBasis: 30, hospFreq: 2, assocBasis: 30, assocFreq: 2, unit: '顆', hospText: '3 mo-12 yrs: 30 mg/kg/day bid', assocText: '30 mg/kg/day，bid' },
-            { id: 'acylo', name: 'Acylo (Acyclovir)', conc: 400, hospBasis: 80, hospFreq: 4, assocBasis: null, unit: '顆', hospText: '水痘: 20 mg/kg QID (Max 800mg)', assocText: '' },
-            { id: 'doxy', name: 'Doxymycin', conc: 100, hospBasis: 4.4, hospFreq: 2, assocBasis: null, unit: '顆', hospText: '<45kg: 4.4 mg/kg/day bid; >45kg: 100mg bid', assocText: '' },
-            { id: 'cino', name: 'Cinolone', conc: 250, hospBasis: 30, hospFreq: 2, assocBasis: null, unit: '顆', hospText: '10-20 mg/kg Q12H (Max 750mg/dose)', assocText: '' }
+            { id: 'cexime', name: 'Cexime (100mg/cap)', conc: 100, hospBasis: 8, hospFreq: 2, assocBasis: 10, assocFreq: 2, unit: '顆', hospText: '<45kg: 8 mg/kg/day div 1-2; >45kg: 400 mg/day', assocText: '10 mg/kg/day，bid' },
+            { id: 'amox', name: 'Amoxicillin (500mg/cap)', conc: 500, hospBasis: 45, hospFreq: 3, assocBasis: 90, assocFreq: 2, unit: '顆', hospText: '<40kg: 40-45 mg/kg; >40kg: 500mg Q8H', assocText: '80-90 mg/kg/day，bid-tid' },
+            { id: 'ceflour', name: 'Ceflour (250mg/cap)', conc: 250, hospBasis: 30, hospFreq: 2, assocBasis: 30, assocFreq: 2, unit: '顆', hospText: '3 mo-12 yrs: 30 mg/kg/day bid', assocText: '30 mg/kg/day，bid' },
+            { id: 'acylo', name: 'Acylo (400mg/tab)', conc: 400, hospBasis: 80, hospFreq: 4, assocBasis: null, unit: '顆', hospText: '水痘: 20 mg/kg QID (Max 800mg)', assocText: '' },
+            { id: 'doxy', name: 'Doxymycin (100mg/cap)', conc: 100, hospBasis: 4.4, hospFreq: 2, assocBasis: null, unit: '顆', hospText: '<45kg: 4.4 mg/kg/day bid; >45kg: 100mg bid', assocText: '' },
+            { id: 'cino', name: 'Cinilon (250mg/cap)', conc: 250, hospBasis: 30, hospFreq: 2, assocBasis: null, unit: '顆', hospText: '10-20 mg/kg Q12H (Max 750mg/dose)', assocText: '' },
+            { id: 'tamiflu', name: 'Tamiflu (克流感)', type: 'special', unit: '顆', hospText: '', assocText: '' }
         ]
     };
 
     let currentMode = 'susp';
+    let tamifluAgeMode = 'child';
 
     function switchTab(mode) {
         currentMode = mode;
@@ -193,6 +319,7 @@
         }
         renderSelect();
         hideResult();
+        handleDrugChange();
     }
 
     function renderSelect() {
@@ -206,129 +333,242 @@
         });
     }
 
+    function handleDrugChange() {
+        hideResult();
+        const drugIdx = document.getElementById('drug').value;
+        const drug = db[currentMode][drugIdx];
+        
+        const tfModeSelect = document.getElementById('tamiflu-mode-select');
+        const tfRenal = document.getElementById('tamiflu-renal-block');
+        const tfRef = document.getElementById('tamiflu-ref-container');
+        const wGroup = document.getElementById('weight-group');
+        const aGroup = document.getElementById('age-group');
+
+        if (drug.id === 'tamiflu') {
+            tfModeSelect.style.display = 'flex';
+            tfRenal.style.display = 'block'; 
+            tfRef.style.display = 'none'; 
+            setTamifluMode('child'); // 預設 child
+        } else {
+            tfModeSelect.style.display = 'none';
+            tfRenal.style.display = 'none';
+            tfRef.style.display = 'none';
+            wGroup.style.display = 'block'; 
+            aGroup.style.display = 'block';
+        }
+    }
+
+    function setTamifluMode(mode) {
+        tamifluAgeMode = mode;
+        document.getElementById('btn-infant').classList.toggle('active', mode === 'infant');
+        document.getElementById('btn-child').classList.toggle('active', mode === 'child');
+        document.getElementById('btn-adult').classList.toggle('active', mode === 'adult');
+
+        // UI 控制
+        const crTrigger = document.getElementById('cr-calc-trigger');
+        const crCalc = document.getElementById('cr-calculator');
+        const egfrHint = document.getElementById('egfr-hint');
+        const wGroup = document.getElementById('weight-group');
+        const aGroup = document.getElementById('age-group');
+
+        if (mode === 'adult') {
+            crTrigger.style.display = 'none';
+            crCalc.style.display = 'none';
+            egfrHint.innerHTML = "* 成人請直接輸入檢驗數值 (MDRD/CKD-EPI)<br><span style='color:#666; font-size:12px; display:block; margin-top:6px; line-height:1.4;'>本網頁工具採取「直接對應」的邏輯，將計算或輸入的 eGFR 數值 直接拿來對照仿單上的 CrCl 分級 (60, 30, 10)。</span>";
+            wGroup.style.display = 'none'; 
+            aGroup.style.display = 'none';
+        } else {
+            crTrigger.style.display = 'block';
+            egfrHint.innerHTML = "* 兒科適用 Bedside Schwartz 公式：<br><span style='font-weight:bold; color:#2980b9; display:block; margin-top:4px;'>eGFR = 0.413 × 身高 (cm) / Cr (mg/dL)</span>";
+            wGroup.style.display = 'block';
+            aGroup.style.display = 'block';
+        }
+        
+        hideResult();
+    }
+
+    function toggleCrCalc() {
+        const calc = document.getElementById('cr-calculator');
+        calc.style.display = calc.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function calcSchwartz() {
+        const h = parseFloat(document.getElementById('calc-height').value);
+        const cr = parseFloat(document.getElementById('calc-cr').value);
+        if (!h || !cr) { alert('請輸入身高與肌酸酐'); return; }
+        const egfr = (0.413 * h) / cr;
+        document.getElementById('egfr-input').value = egfr.toFixed(1);
+        checkRenalStatus();
+    }
+
+    function checkRenalStatus() {
+        const egfrVal = parseFloat(document.getElementById('egfr-input').value);
+        const badge = document.getElementById('renal-status-badge');
+        if (!egfrVal && egfrVal !== 0) { badge.style.display = 'none'; return; }
+        badge.style.display = 'inline-block';
+        if (egfrVal > 60) { badge.style.backgroundColor = '#27ae60'; badge.innerText = '正常'; } 
+        else if (egfrVal >= 30) { badge.style.backgroundColor = '#f39c12'; badge.innerText = '30-60 (BID)'; } 
+        else if (egfrVal >= 10) { badge.style.backgroundColor = '#e67e22'; badge.innerText = '10-30 (QD)'; } 
+        else { badge.style.backgroundColor = '#c0392b'; badge.innerText = 'ESRD/洗腎'; }
+    }
+
     function hideResult() {
         document.getElementById('results-container').querySelectorAll('.result-card').forEach(el => el.style.display = 'none');
         document.getElementById('guide-container').style.display = 'none';
+        document.getElementById('tamiflu-ref-container').style.display = 'none';
         document.getElementById('estimate-msg').style.display = 'none';
     }
 
-    // ★ 體重估算功能
     function estimateWeight() {
         const age = parseFloat(document.getElementById('age').value);
         const weightInput = document.getElementById('weight');
         const msgDiv = document.getElementById('estimate-msg');
-        
-        if (!age || age <= 0) {
-            alert("請先輸入有效的年齡");
-            return;
-        }
-
+        if (!age || age <= 0) { alert("請先輸入有效的年齡"); return; }
         let estWeight = 0;
-        let method = "";
-
-        // 1. 查表 (0.5歲 - 12歲)
-        // 為了方便，四捨五入到最近的整數或0.5
-        let lookupAge = age;
-        if (age < 1) lookupAge = 0.5; // 不滿1歲先對應到0.5
-        else lookupAge = Math.round(age);
-
-        if (growthChart[lookupAge]) {
-            estWeight = growthChart[lookupAge];
-            method = "台灣兒童生長曲線(50th)";
-        } else if (age > 12) {
-            // 2. 超過12歲用簡單公式粗估或提示
-            estWeight = (age * 2) + 8; // 舊式粗估公式
-            method = "簡易公式估算 (Age x 2 + 8)";
-        } else {
-             // 補間或其他狀況
-             estWeight = (age * 2) + 8; 
-             method = "簡易公式估算";
-        }
-
+        let lookupAge = (age < 1) ? 0.5 : Math.round(age);
+        if (growthChart[lookupAge]) estWeight = growthChart[lookupAge];
+        else estWeight = (age * 2) + 8;
         weightInput.value = estWeight;
-        msgDiv.innerText = `💡 已填入參考體重: ${estWeight} kg (${method})`;
+        msgDiv.innerText = `💡 已填入參考體重: ${estWeight} kg`;
         msgDiv.style.display = 'block';
-        
-        // 如果是 Baktar，因為是看年齡，不需要特別動作，但如果是其他藥品，填入體重後使用者可以直接按計算
     }
 
     function calculate() {
-        const weight = parseFloat(document.getElementById('weight').value);
-        const age = parseFloat(document.getElementById('age').value);
         const drugIdx = document.getElementById('drug').value;
         const drug = db[currentMode][drugIdx];
 
+        // Tamiflu 特殊處理
+        if (drug.id === 'tamiflu') {
+            const egfrInput = document.getElementById('egfr-input').value;
+            const egfr = egfrInput ? parseFloat(egfrInput) : 100;
+            let targetDoseMg = 0;
+            let freqText = "BID x 5天";
+            let warning = "";
+
+            if (tamifluAgeMode === 'adult') {
+                targetDoseMg = 75; // 成人標準
+            } else {
+                const weight = parseFloat(document.getElementById('weight').value);
+                if (!weight || weight <= 0) { alert('請輸入有效體重'); return; }
+
+                if (tamifluAgeMode === 'infant') {
+                    if (weight > 10) warning = "⚠️ 體重 > 10kg 但選擇未滿1歲，仿單無建議劑量。";
+                    else targetDoseMg = weight * 3;
+                } else {
+                    if (weight <= 15) targetDoseMg = 30;
+                    else if (weight <= 23) targetDoseMg = 45;
+                    else if (weight <= 40) targetDoseMg = 60;
+                    else targetDoseMg = 75;
+                }
+            }
+
+            // 腎功能邏輯
+            if (egfr >= 60) {
+                // 正常
+            } else if (egfr >= 30) {
+                targetDoseMg = 30; 
+                freqText = "BID (腎功能 30-60)";
+                warning += (tamifluAgeMode === 'adult') ? "⚠️ 成人腎功能不全：調整為 30mg BID。" : "⚠️ 依腎功能調整為 30mg BID。";
+            } else if (egfr >= 10) {
+                targetDoseMg = 30;
+                freqText = "QD (腎功能 10-30)";
+                warning += "⚠️ 依腎功能調整為 30mg QD。";
+            } else {
+                warning += "⚠️ eGFR < 10，請參考下方透析建議。";
+            }
+
+            // 顯示控制：成人 vs 兒童
+            const kidView = document.getElementById('tf-kid-view');
+            const adultView = document.getElementById('tf-adult-view');
+            const headerTitle = document.getElementById('tf-header-title');
+
+            if (tamifluAgeMode === 'adult') {
+                // 成人模式：顯示單次幾顆
+                let capsPerDose = targetDoseMg / 75; 
+                document.getElementById('val-tamiflu-adult').innerText = Number.isInteger(capsPerDose) ? capsPerDose : capsPerDose.toFixed(1);
+                document.getElementById('freq-tamiflu-adult').innerText = freqText;
+                document.getElementById('dose-tamiflu-adult-mg').innerText = targetDoseMg;
+                
+                headerTitle.innerText = "💊 克流感服用劑量";
+                kidView.style.display = 'none';
+                adultView.style.display = 'block';
+            } else {
+                // 兒童模式：顯示泡製總量
+                let totalCaps = 0;
+                if (targetDoseMg > 0) totalCaps = (targetDoseMg * 10) / 75;
+                
+                document.getElementById('val-tamiflu').innerText = Number.isInteger(totalCaps) ? totalCaps : totalCaps.toFixed(1);
+                document.getElementById('dose-tamiflu-mg').innerText = targetDoseMg.toFixed(0);
+                document.getElementById('freq-tamiflu').innerText = freqText;
+                
+                headerTitle.innerText = "🦠 克流感調配 (50mL)";
+                kidView.style.display = 'block';
+                adultView.style.display = 'none';
+            }
+
+            document.getElementById('warning-tamiflu').innerText = warning;
+            document.getElementById('res-card-tamiflu').style.display = 'block';
+            document.getElementById('tamiflu-ref-container').style.display = 'block';
+            
+            // 參考表切換
+            ['tf-ref-child', 'tf-ref-infant', 'tf-ref-adult'].forEach(id => document.getElementById(id).style.display = 'none');
+            if (tamifluAgeMode === 'infant') document.getElementById('tf-ref-infant').style.display = 'block';
+            else if (tamifluAgeMode === 'adult') document.getElementById('tf-ref-adult').style.display = 'block';
+            else document.getElementById('tf-ref-child').style.display = 'block';
+            
+            return;
+        }
+
+        // 一般藥品計算
+        const weight = parseFloat(document.getElementById('weight').value);
+        const age = parseFloat(document.getElementById('age').value);
         if (!weight || weight <= 0) { alert('請輸入有效體重'); return; }
 
-        // --- 1. 計算院內建議 ---
-        let hospDose = 0;
-        let hospNote = '';
-        
+        let hospDose = 0; let hospNote = '';
         if (drug.id === 'baktar') {
             if (isNaN(age)) { alert('Baktar 需輸入年齡'); return; }
-            if (age < 0.5) hospDose = 2.5;
-            else if (age <= 5) hospDose = 5;
-            else hospDose = 10;
+            if (age < 0.5) hospDose = 2.5; else if (age <= 5) hospDose = 5; else hospDose = 10;
         } 
-        else if (drug.id === 'ulexin' && weight > 25) {
-            hospDose = 10; hospNote = '(>25kg固定)';
-        }
+        else if (drug.id === 'ulexin' && weight > 25) { hospDose = 10; hospNote = '(>25kg固定)'; }
         else if (currentMode === 'pow') {
             let dailyMg = weight * drug.hospBasis;
             let isAdult = false;
-            // 磨粉上限判斷
             if (drug.id === 'cexime' && weight > 45) { dailyMg = 400; isAdult = true; }
             if (drug.id === 'amox' && weight >= 40) { dailyMg = 1500; isAdult = true; } 
             if (drug.id === 'doxy' && weight > 45) { dailyMg = 200; isAdult = true; }
             if (drug.id === 'acylo' && weight > 40) { dailyMg = 3200; isAdult = true; }
-
             hospDose = (dailyMg / drug.hospFreq) / drug.conc;
             if (isAdult) hospNote = '(成人劑量)';
-        }
-        else {
-            const dailyMg = weight * drug.hospBasis;
-            hospDose = (dailyMg / drug.conc) / drug.hospFreq;
+        } else {
+            hospDose = (weight * drug.hospBasis / drug.conc) / drug.hospFreq;
         }
 
         const hospDoseText = currentMode === 'pow' ? (Number.isInteger(hospDose) ? hospDose : hospDose.toFixed(2)) : hospDose.toFixed(1);
         document.getElementById('val-hosp').innerText = hospDoseText + (hospNote ? "*" : "");
         document.getElementById('unit-hosp').innerText = drug.unit;
-        
         let fTextH = drug.hospFreq === 1 ? 'QD' : (drug.hospFreq === 2 ? 'BID' : (drug.hospFreq === 3 ? 'TID' : 'QID'));
         if (drug.id === 'ulexin') fTextH = 'Q6H';
         document.getElementById('freq-hosp').innerText = fTextH;
         document.getElementById('res-card-hosp').style.display = 'block';
 
-        // --- 2. 計算醫學會建議 ---
         const assocCard = document.getElementById('res-card-assoc');
-        const assocBox = document.getElementById('text-assoc-box');
-        
         if (drug.assocBasis) {
-            const dailyMgAssoc = weight * drug.assocBasis;
+            let dailyMgAssoc = weight * drug.assocBasis;
             let assocDose = (dailyMgAssoc / drug.conc) / drug.assocFreq;
-            
             if (currentMode === 'pow' && drug.id === 'cexime' && weight > 45) assocDose = 2; 
             
             const assocDoseText = currentMode === 'pow' ? (Number.isInteger(assocDose) ? assocDose : assocDose.toFixed(2)) : assocDose.toFixed(1);
-            
             document.getElementById('val-assoc').innerText = assocDoseText;
             document.getElementById('unit-assoc').innerText = drug.unit;
-            
             let fTextA = drug.assocFreq === 1 ? 'QD' : (drug.assocFreq === 2 ? 'BID' : (drug.assocFreq === 3 ? 'TID' : 'QID'));
             document.getElementById('freq-assoc').innerText = fTextA;
-
-            if (drug.id === 'aug') {
-                document.getElementById('warning-assoc').innerText = "⚠️ 依 90mg/kg 計算。院內配方比例 7:1，請留意腹瀉副作用。";
-            } else {
-                document.getElementById('warning-assoc').innerText = "";
-            }
-
+            document.getElementById('warning-assoc').innerText = (drug.id === 'aug') ? "⚠️ 依 90mg/kg 計算。院內配方比例 7:1，請留意腹瀉。" : "";
             assocCard.style.display = 'block';
-            assocBox.style.display = 'block';
+            document.getElementById('text-assoc-box').style.display = 'block';
             document.getElementById('text-assoc').innerText = drug.assocText;
         } else {
             assocCard.style.display = 'none';
-            assocBox.style.display = 'none';
+            document.getElementById('text-assoc-box').style.display = 'none';
         }
 
         document.getElementById('guide-container').style.display = 'block';
@@ -336,6 +576,7 @@
     }
 
     renderSelect();
+    handleDrugChange();
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); });
     }
