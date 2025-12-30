@@ -169,8 +169,8 @@
                 note: "UpTodate Lexidrug : Dosage base on once daily frequency (Q24H or QD)\nInfant/Child : Maximum daily dose : 2 g/day"
             },
             { 
-                name: "Cetazone", generic: "Cefmetazole", spec: "1g/vial", 
-                strength: 1000, unitName: "vial",
+                name: "Cetazone", generic: "Cefmetazole", spec: "500mg/vial", 
+                strength: 500, unitName: "vial",
                 dosages: {
                     neonate: null,
                     infant: { min: 8, max: 33, freq: "Q8H" },
@@ -191,8 +191,8 @@
                 note: "UpTodate Lexidrug : Infant/Child : \n-> 150-180 mg/kg/day in divided doses every 4 to 8 hours\n-> Maximum daily dose : 2 g/day"
             },
             { 
-                name: "Gentamycin inj", generic: "Gentamycin", spec: "80mg/2ml amp", 
-                strength: 80, unitName: "amp",
+                name: "Gentamycin inj", generic: "Gentamycin", spec: "80mg/2ml/vial", 
+                strength: 80, unitName: "vial",
                 dosages: {
                     neonate: { min: 4, max: 5, freq: "Q24-48H" },
                     infant: { min: 2, max: 2.5, freq: "Q8H" },
@@ -202,8 +202,8 @@
                 note: "UpTodate Lexidrug : Extended-interval dosing : \nInfant/Child : 5 to 7.5 mg/kg/dose QD\nTDM is necessary if duration > 3-5 days"
             },
             { 
-                name: "Mepem", generic: "Meropenem", spec: "500mg/vial", 
-                strength: 500, unitName: "vial",
+                name: "Mepem", generic: "Meropenem", spec: "0.25gm/vial", 
+                strength: 250, unitName: "vial",
                 dosages: {
                     neonate: { min: 20, max: 30, freq: "Q8-12H" },
                     infant: { min: 20, max: 20, freq: "Q8H" },
@@ -212,8 +212,8 @@
                 rangeText: "Neonate : 20-30 mg/kg/dose Q8-12H<br>Infant/Child : 20 mg/kg/dose Q8H"
             },
             { 
-                name: "Ocillina", generic: "Oxacillin", spec: "1g/vial", 
-                strength: 1000, unitName: "vial",
+                name: "Ocillina", generic: "Oxacillin", spec: "500mg/vial", 
+                strength: 500, unitName: "vial",
                 dosages: {
                     neonate: { min: 25, max: 25, freq: "Q6-12H" },
                     infant: { min: 25, max: 50, freq: "Q6H" },
@@ -223,7 +223,7 @@
                 note: "UpTodate Lexidrug : Infant/Child : Maximum daily dose : 12 g/day"
             },
             { 
-                name: "Penicillin G【5MU】", generic: "Aq. Penicillin", spec: "5MU/vial", 
+                name: "Penicillin G【5MU】", generic: "Aq. Penicillin", spec: "500萬U/vial", 
                 strength: 5000000, unitName: "vial",
                 dosages: {
                     neonate: { min: 50000, max: 50000, freq: "Q8-12H", isUnit: true },
@@ -232,16 +232,6 @@
                 },
                 rangeText: "Neonate : 50,000 units/kg/dose Q8-12H<br>Infant/Child : 25,000-75,000 units/kg/dose Q6H",
                 note: "UpTodate Lexidrug : Infant/Child : Maximum daily dose : 24 million units/day"
-            },
-            { 
-                name: "Rapiacta inj", generic: "Peramivir", spec: "300MG/60ML/BAG", 
-                strength: 300, unitName: "bag",
-                dosages: {
-                    neonate: null,
-                    infant: { min: 6, max: 12, freq: "" },
-                    child: { min: 6, max: 12, freq: "" }
-                },
-                rangeText: "6-12 mg/kg/dose"
             },
             { 
                 name: "Soonmelt inj", generic: "Amoxicillin/Clavulanate", spec: "A 500, C 100mg/VIAL", 
@@ -265,7 +255,7 @@
                 note: "UpTodate Lexidrug : Infant/Child : Maximum daily dose : 8 g/day\n-> Higher dose : 75-100 mg/dose Q6H for specific infection, Max : 12 g/day"
             },
             { 
-                name: "U-VANCO inj", generic: "Vancomycin", spec: "500mg/vial", 
+                name: "U-VANCO inj$", generic: "Vancomycin", spec: "500mg/vial", 
                 strength: 500, unitName: "vial",
                 dosages: {
                     neonate: { min: 15, max: 15, freq: "Q8-24H" },
@@ -274,6 +264,17 @@
                 },
                 rangeText: "Neonate : 15 mg/kg/dose Q8-24H<br>Infant/Child : 10-15 mg/kg/dose Q6H",
                 note: "TDM is necessary if duration > 3-5 days"
+            },
+            { 
+                name: "Rapiacta inj", generic: "Peramivir", spec: "300MG/60ML/BAG", 
+                strength: 300, unitName: "bag",
+                dosages: {
+                    neonate: null,
+                    infant: { min: 10, max: 10, freq: "" },
+                    child: { min: 10, max: 10, freq: "" }
+                },
+                rangeText: "10 mg/kg/dose",
+                note: "6-12 mg/kg/dose also mentioned"
             }
         ],
         non: [
@@ -286,17 +287,18 @@
                     child: { min: 20, max: 30, freq: "Q6H" }
                 },
                 rangeText: "Infant/Child : 20-30 mg/kg/dose Q6H",
-                note: "1 g Propacetamol = 0.5 g Paracetamol"
+                note: "1 g Propacetamol = 0.5 g Paracetamol\nAdjusted from dosage of Acetaminophen"
             },
             { 
-                name: "Dupin inj", generic: "Diazepam", spec: "10mg/amp", 
-                strength: 10, unitName: "amp",
+                name: "Novamin inj", generic: "Prochlorperazine", spec: "5mg/ml/amp", 
+                strength: 5, unitName: "amp",
                 dosages: {
                     neonate: null,
-                    infant: { min: 0.05, max: 0.3, freq: "" },
-                    child: { min: 0.05, max: 0.3, freq: "" }
+                    infant: null,
+                    child: { min: 0.1, max: 0.1, freq: "Q8-12H" }
                 },
-                rangeText: "Infant/Child : 0.05 to 0.3 mg/kg/dose"
+                rangeText: "Child : 0.1 mg/kg, Max : 10 mg/dose Q8-12H",
+                note: "UpTodate Lexidrug : dosage for Children ≥2 years weighing ≥9 kg"
             },
             { 
                 name: "Escopan inj", generic: "Hyoscine-N-butylbromide", spec: "20mg/ml/amp", 
@@ -310,29 +312,8 @@
                 note: "Package insert : Maximum daily dose : 1.5 mg/kg"
             },
             { 
-                name: "Keppra for IVF", generic: "Levetiracetam", spec: "500mg/5ml/vial", 
-                strength: 500, unitName: "vial",
-                dosages: {
-                    neonate: null,
-                    infant: { min: 10, max: 30, freq: "Q12H" },
-                    child: { min: 10, max: 30, freq: "Q12H" }
-                },
-                rangeText: "10-30 mg/kg/dose Q12H"
-            },
-            { 
-                name: "Novamin inj", generic: "Prochlorperazine", spec: "5mg/1ml/amp", 
-                strength: 5, unitName: "amp",
-                dosages: {
-                    neonate: null,
-                    infant: null,
-                    child: { min: 0.1, max: 0.1, freq: "Q8-12H" }
-                },
-                rangeText: "Child : 0.1 mg/kg, Max : 10 mg/dose Q8-12H",
-                note: "UpTodate Lexidrug : dosage for Children ≥2 years weighing ≥9 kg"
-            },
-            { 
-                name: "promeRAN inj", generic: "Metoclopramide", spec: "10mg/2ml/amp", 
-                strength: 10, unitName: "amp",
+                name: "promeRAN inj", generic: "Metoclopramide", spec: "7.68mg/2ml/amp", 
+                strength: 7.68, unitName: "amp",
                 dosages: {
                     neonate: null,
                     infant: null,
@@ -353,7 +334,17 @@
                 note: "UpTodate Lexidrug : Stress ulcer prophylaxis, gastric acid suppression : \nInfant/Child : 1-2 mg/kg/day divided Q8-12H\n-> Maximum daily dose : 40 mg/day"
             },
             { 
-                name: "Anxicam inj", generic: "Lorazepam inj", spec: "2mg/ml/amp", 
+                name: "Keppra for IVF", generic: "Levetiracetam", spec: "500mg/5ml/vial", 
+                strength: 500, unitName: "vial",
+                dosages: {
+                    neonate: null,
+                    infant: { min: 10, max: 30, freq: "Q12H" },
+                    child: { min: 10, max: 30, freq: "Q12H" }
+                },
+                rangeText: "10-30 mg/kg/dose Q12H"
+            },
+            { 
+                name: "Anxicam inj★", generic: "Lorazepam inj★", spec: "2mg/ml/amp", 
                 strength: 2, unitName: "amp",
                 dosages: {
                     neonate: null,
@@ -363,7 +354,7 @@
                 rangeText: "0.05-0.1 mg/kg/dose Max 4mg"
             },
             { 
-                name: "Dormicum(5mg/amp)", generic: "Midazolam(5mg/amp) inj", spec: "5mg/1ml/amp", 
+                name: "Dormicum(5mg/amp)★", generic: "Midazolam(5mg/amp) inj★", spec: "5mg/ml/amp", 
                 strength: 5, unitName: "amp",
                 dosages: {
                     neonate: null,
@@ -371,6 +362,16 @@
                     child: { min: 0.15, max: 0.2, freq: "" }
                 },
                 rangeText: "0.15-0.2 mg/kg/dose Max 5mg"
+            },
+            { 
+                name: "Dupin inj★", generic: "Diazepam", spec: "10mg/2ml/amp", 
+                strength: 10, unitName: "amp",
+                dosages: {
+                    neonate: null,
+                    infant: { min: 0.05, max: 0.3, freq: "" },
+                    child: { min: 0.05, max: 0.3, freq: "" }
+                },
+                rangeText: "Infant/Child : 0.05 to 0.3 mg/kg/dose"
             }
         ]
     };
