@@ -7,10 +7,30 @@
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#27ae60">
+    
+    <link rel="icon" href="icon_inj.png" type="image/png">
+    
     <link rel="apple-touch-icon" href="icon_inj.png">
+    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
+    ```
+
+### 2. 檢查檔案名稱與位置
+
+請確認您的資料夾中，真的有一個檔案叫做 **`icon_inj.png`**，而且它必須跟 `injection.html` 放在**同一個資料夾**內。
+
+* 如果是 `icon.png`，請把程式碼改成 `href="icon.png"`。
+* 如果是 `jpg` 檔，請把程式碼改成 `href="icon_inj.jpg"` 且 `type="image/jpeg"`。
+
+### 3. 強制重新整理 (最重要的一步)
+
+修改完並上傳後，瀏覽器通常會「記住」舊的設定（或是記住之前沒有圖標的狀態）。請務必執行以下操作：
+
+* **電腦版 Chrome**：在網頁上按下 **`Ctrl + F5`** (Windows) 或 **`Cmd + Shift + R`** (Mac) 進行強制重新整理。
+* **手機版**：關閉該分頁，甚至把瀏覽器 App 滑掉關閉，重新打開網頁通常就會出現了。
+    
     <style>
         body { font-family: "Microsoft JhengHei", -apple-system, sans-serif; background-color: #f0f2f5; margin: 0; padding: 0; color: #333; }
         .container { max-width: 600px; margin: 0 auto; background: white; min-height: 100vh; display: flex; flex-direction: column; }
@@ -491,3 +511,4 @@
 
 </body>
 </html>
+
