@@ -137,6 +137,28 @@
     const db = {
         anti: [
             { 
+                name: "Gentamycin inj", generic: "Gentamycin", spec: "80mg/2ml/vial", 
+                strength: 80, unitName: "vial",
+                dosages: {
+                    neonate: { min: 4, max: 5, freq: "Q24-48H" },
+                    infant: { min: 2, max: 2.5, freq: "Q8H" },
+                    child: { min: 2, max: 2.5, freq: "Q8H" }
+                },
+                rangeText: "Neonate : 4-5 mg/kg/dose Q24-48H<br>Infant/Child : 2-2.5 mg/kg/dose Q8H",
+                note: "UpTodate Lexidrug : Extended-interval dosing : \nInfant/Child : 5 to 7.5 mg/kg/dose QD\nTDM is necessary if duration > 3-5 days"
+            },
+            { 
+                name: "Ampolin inj", generic: "Ampicillin", spec: "500mg/vial", 
+                strength: 500, unitName: "vial",
+                dosages: {
+                    neonate: { min: 50, max: 50, freq: "Q6-12H" },
+                    infant: { min: 12.5, max: 50, freq: "Q6H" },
+                    child: { min: 12.5, max: 50, freq: "Q6H" }
+                },
+                rangeText: "Neonate : 50 mg/kg/dose Q6-12H<br>Infant/Child : 12.5 to 50 mg/kg/dose Q6H",
+                note: "UpTodate Lexidrug : Infant/Child : Maximum daily dose : 8 g/day\n-> Higher dose : 75-100 mg/dose Q6H for specific infection, Max : 12 g/day"
+            },
+            { 
                 name: "Cefa", generic: "Cefazolin", spec: "1gm/vial", 
                 strength: 1000, unitName: "vial",
                 dosages: {
@@ -191,17 +213,6 @@
                 note: "UpTodate Lexidrug : Infant/Child : \n-> 150-180 mg/kg/day in divided doses every 4 to 8 hours\n-> Maximum daily dose : 2 g/day"
             },
             { 
-                name: "Gentamycin inj", generic: "Gentamycin", spec: "80mg/2ml/vial", 
-                strength: 80, unitName: "vial",
-                dosages: {
-                    neonate: { min: 4, max: 5, freq: "Q24-48H" },
-                    infant: { min: 2, max: 2.5, freq: "Q8H" },
-                    child: { min: 2, max: 2.5, freq: "Q8H" }
-                },
-                rangeText: "Neonate : 4-5 mg/kg/dose Q24-48H<br>Infant/Child : 2-2.5 mg/kg/dose Q8H",
-                note: "UpTodate Lexidrug : Extended-interval dosing : \nInfant/Child : 5 to 7.5 mg/kg/dose QD\nTDM is necessary if duration > 3-5 days"
-            },
-            { 
                 name: "Mepem", generic: "Meropenem", spec: "0.25gm/vial", 
                 strength: 250, unitName: "vial",
                 dosages: {
@@ -242,17 +253,6 @@
                     child: { min: 25, max: 25, freq: "Q8-12H" }
                 },
                 rangeText: "Neonate : 25 mg Amox/kg/dose Q12H<br>Infant/Child : 25 mg Amox/kg/dose Q8-12H"
-            },
-            { 
-                name: "Sterile AMPICILLIN Sodium", generic: "Ampicillin", spec: "500mg/vial", 
-                strength: 500, unitName: "vial",
-                dosages: {
-                    neonate: { min: 50, max: 50, freq: "Q6-12H" },
-                    infant: { min: 12.5, max: 50, freq: "Q6H" },
-                    child: { min: 12.5, max: 50, freq: "Q6H" }
-                },
-                rangeText: "Neonate : 50 mg/kg/dose Q6-12H<br>Infant/Child : 12.5 to 50 mg/kg/dose Q6H",
-                note: "UpTodate Lexidrug : Infant/Child : Maximum daily dose : 8 g/day\n-> Higher dose : 75-100 mg/dose Q6H for specific infection, Max : 12 g/day"
             },
             { 
                 name: "U-VANCO inj$", generic: "Vancomycin", spec: "500mg/vial", 
