@@ -9,7 +9,7 @@ const ASSETS_TO_CACHE = [
   './icon.png',
   './manifest.json'
   './injectables.html'
-  './icon_2.png',
+  './icon_inj.png',
 ];
 
 // 安裝 Service Worker
@@ -61,6 +61,7 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
+
 
 
 
