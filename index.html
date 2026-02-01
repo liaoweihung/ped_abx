@@ -17,7 +17,14 @@
         
         header { background: #2980b9; color: white; padding: 15px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
         header h2 { margin: 0; font-size: 18px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-
+        /* 新增切換按鈕樣式 */
+        .nav-link {
+            display: inline-block; margin-top: 8px; font-size: 13px;
+            color: #fff; text-decoration: none;
+            background: rgba(255,255,255,0.2); padding: 6px 15px;
+            border-radius: 20px; transition: 0.2s;
+        }
+        .nav-link:active { background: rgba(255,255,255,0.4); }
         .content { padding: 15px; flex: 1; }
 
         .tab-group { display: flex; gap: 10px; margin-bottom: 20px; }
@@ -94,6 +101,7 @@
             <img src="icon.png" style="width: 28px; height: 28px; border-radius: 50%;" onerror="this.style.display='none'">
             小兒抗生素速算
         </h2>
+        <a href="injection.html" class="nav-link">前往：兒科常用針劑 💉</a>
     </header>
 
     <div class="content">
@@ -584,3 +592,4 @@
 
 </body>
 </html>
+
