@@ -8,7 +8,8 @@ const ASSETS_TO_CACHE = [
   './index.html',
   './icon.png',
   './manifest.json'
-  // 如果有其他圖片或 css 檔也要列在這裡
+  './injectables.html'
+  './icon_2.png',
 ];
 
 // 安裝 Service Worker
@@ -60,4 +61,5 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
+
 
