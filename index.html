@@ -101,28 +101,24 @@
         .ref-title { font-size: 15px; font-weight: bold; color: #d35400; border-left: 4px solid #d35400; padding-left: 8px; margin-bottom: 10px; }
 
         footer { text-align: center; padding: 20px; background: #eee; font-size: 12px; color: #aaa; margin-top: auto; line-height: 1.6; }
-    /* === 開發者專屬頁尾樣式 === */
+   /* === 開發者專屬頁尾樣式 (極簡連結版) === */
         .creator-footer {
             text-align: center;
             padding: 25px 0 20px 0;
-            font-size: 13px;
-            color: #888888;
-            letter-spacing: 1px;
             width: 100%;
         }
         
-        .creator-footer .hub-link {
-            color: #66b3ff;
-            text-decoration: none;
-            font-size: 12px;
-            margin-top: 8px;
-            display: inline-block;
-            padding: 4px 10px;
-            border: 1px solid #444;
-            border-radius: 12px;
-            background-color: #222;
+        .creator-footer a {
+            color: #888888; /* 平常是低調的灰色 */
+            text-decoration: none; /* 拿掉醜醜的底線 */
+            font-size: 13px;
+            letter-spacing: 1px;
+            transition: color 0.2s;
         }
-    
+        
+        .creator-footer a:active {
+            color: #66b3ff; /* 手指點按時會發出微光，給予點擊回饋 */
+        }
     </style>
 </head>
 <body>
@@ -631,8 +627,8 @@
     }
 </script>
 <div class="creator-footer">
-        💎 DiamondL 開發設計<br>
-        <a href="https://liaoweihung.github.io/hub/index.html" class="hub-link">探索 DiamondL 臨床工具系列</a>
+        <a href="https://liaoweihung.github.io/hub/index.html">💎 DiamondL 藥師開發設計</a>
     </div>
+  
 </body>
 </html>
