@@ -446,7 +446,16 @@
         }
 
         const drug = db[cat][drugIdx];
-        
+        // --- 👇 新增：追蹤針劑計算動作 👇 ---
+    if (typeof gtag === 'function' && weight > 0) {
+        gtag('event', 'calc_inj_dose', {
+            'drug_name': drug.name, // 紀錄藥名，例如: Gentamycin
+            'category': cat,        // 紀錄分類：抗感染或非抗感染
+            'weight_input': weight
+        });
+        console.log('📍 GA4 紀錄：針劑計算 - ' + drug.name);
+    }
+    // --- 👆 新增結束 👆 ---
         // Render Title Unit
         document.getElementById('res-drug-unit').innerText = `規格: ${drug.spec}`;
 
