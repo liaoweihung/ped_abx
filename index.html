@@ -106,19 +106,19 @@
             text-align: center;
             padding: 25px 0 20px 0;
             width: 100%;
-            color: #888888; /* 👈 新增這行，讓中間的分隔線 | 變成灰色 */
+            color: #888888; 
         }
         
         .creator-footer a {
-            color: #888888; /* 平常是低調的灰色 */
-            text-decoration: none; /* 拿掉醜醜的底線 */
+            color: #888888; 
+            text-decoration: none; 
             font-size: 13px;
             letter-spacing: 1px;
             transition: color 0.2s;
         }
         
         .creator-footer a:active {
-            color: #66b3ff; /* 手指點按時會發出微光，給予點擊回饋 */
+            color: #66b3ff; 
         }
     </style>
 </head>
@@ -219,7 +219,7 @@
                 <span id="warning-assoc" class="note-warning"></span>
             </div>
 
-           <div id="res-card-combo" class="result-card" style="display:none;">
+            <div id="res-card-combo" class="result-card" style="display:none;">
                 <div class="res-header res-combo">
                     <span>💊 高劑量中耳炎組合 (動態核算)</span>
                     <small>Target 90mg/kg</small>
@@ -362,11 +362,11 @@
         currentMode = mode;
         const btns = document.querySelectorAll('.tab-btn');
         if (mode === 'susp') {
-            btns[0].classList.add('active');
-            btns[1].classList.remove('active');
+            btns.classList.add('active');
+            btns[cite: 1].classList.remove('active');
         } else {
-            btns[0].classList.remove('active');
-            btns[1].classList.add('active');
+            btns.classList.remove('active');
+            btns[cite: 1].classList.add('active');
         }
         renderSelect();
         hideResult();
@@ -376,7 +376,7 @@
     function renderSelect() {
         const select = document.getElementById('drug');
         select.innerHTML = '';
-        db[currentMode].forEach((d, index) => {
+        db.forEach((d, index) => {
             const opt = document.createElement('option');
             opt.value = index;
             opt.text = d.name;
@@ -387,7 +387,7 @@
     function handleDrugChange() {
         hideResult();
         const drugIdx = document.getElementById('drug').value;
-        const drug = db[currentMode][drugIdx];
+        const drug = db;
         
         const tfModeSelect = document.getElementById('tamiflu-mode-select');
         const tfRenal = document.getElementById('tamiflu-renal-block');
@@ -414,7 +414,7 @@
         document.getElementById('btn-infant').classList.toggle('active', mode === 'infant');
         document.getElementById('btn-child').classList.toggle('active', mode === 'child');
         document.getElementById('btn-adult').classList.toggle('active', mode === 'adult');
-        // ... (Same UI logic)
+        
         const crTrigger = document.getElementById('cr-calc-trigger');
         const crCalc = document.getElementById('cr-calculator');
         const egfrHint = document.getElementById('egfr-hint');
@@ -436,7 +436,6 @@
         hideResult();
     }
     
-    // ... (toggleCrCalc, calcSchwartz, checkRenalStatus, estimateWeight - Same as before)
     function toggleCrCalc() {
         const calc = document.getElementById('cr-calculator');
         calc.style.display = calc.style.display === 'none' ? 'block' : 'none';
@@ -469,7 +468,7 @@
         if (!age || age <= 0) { alert("請先輸入有效的年齡"); return; }
         let estWeight = 0;
         let lookupAge = (age < 1) ? 0.5 : Math.round(age);
-        if (growthChart[lookupAge]) estWeight = growthChart[lookupAge];
+        if (growthChart) estWeight = growthChart;
         else estWeight = (age * 2) + 8;
         weightInput.value = estWeight;
         msgDiv.innerText = `💡 已填入參考體重: ${estWeight} kg`;
@@ -483,7 +482,7 @@
         document.getElementById('estimate-msg').style.display = 'none';
     }
 
-　　// === 新增：組合治療動態反推功能 ===
+    // === 新增：組合治療動態反推功能 ===
     function recalcCombo() {
         const weight = parseFloat(document.getElementById('weight').value);
         const actualDose = parseFloat(document.getElementById('combo-actual-dose').value) || 0;
@@ -528,23 +527,23 @@
                 document.getElementById('text-combo').style.display = 'none';
             }
         }
-    }　
+    }
     
     function calculate() {
         const drugIdx = document.getElementById('drug').value;
-        const drug = db[currentMode][drugIdx];
+        const drug = db;
         const weight = parseFloat(document.getElementById('weight').value);
 
-   // --- 👇 新增：追蹤口服計算動作 👇 ---
-    if (typeof gtag === 'function' && weight > 0) {
-        gtag('event', 'calc_oral_dose', {
-            'drug_name': drug.name, // 紀錄是哪種藥，例如: Augmentin
-            'weight_input': weight, // 紀錄輸入的體重
-            'app_version': '20251231'
-        });
-        console.log('📍 GA4 紀錄：口服計算 - ' + drug.name);
-    }
-    // --- 👆 新增結束 👆 ---
+        // --- 👇 新增：追蹤口服計算動作 👇 ---
+        if (typeof gtag === 'function' && weight > 0) {
+            gtag('event', 'calc_oral_dose', {
+                'drug_name': drug.name, // 紀錄是哪種藥，例如: Augmentin
+                'weight_input': weight, // 紀錄輸入的體重
+                'app_version': '20251231'
+            });
+            console.log('📍 GA4 紀錄：口服計算 - ' + drug.name);
+        }
+        // --- 👆 新增結束 👆 ---
         
         // ... (Tamiflu logic remains same)
         if (drug.id === 'tamiflu') {
@@ -584,7 +583,7 @@
             document.getElementById('warning-tamiflu').innerText = warning;
             document.getElementById('res-card-tamiflu').style.display = 'block';
             document.getElementById('tamiflu-ref-container').style.display = 'block';
-            ['tf-ref-child', 'tf-ref-infant', 'tf-ref-adult'].forEach(id => document.getElementById(id).style.display = 'none');
+           .forEach(id => document.getElementById(id).style.display = 'none');
             if (tamifluAgeMode === 'infant') document.getElementById('tf-ref-infant').style.display = 'block';
             else if (tamifluAgeMode === 'adult') document.getElementById('tf-ref-adult').style.display = 'block';
             else document.getElementById('tf-ref-child').style.display = 'block';
@@ -642,7 +641,7 @@
             document.getElementById('text-assoc-box').style.display = 'none';
         }
 
-       // --- 組合治療邏輯 (動態輸入版) ---
+        // --- 組合治療邏輯 (動態輸入版) ---
         const comboCard = document.getElementById('res-card-combo');
 
         if (drug.id === 'aug') {
@@ -671,12 +670,25 @@
         } else {
             comboCard.style.display = 'none';
         }
+
+        // 顯示指南與建議資訊
+        document.getElementById('guide-container').style.display = 'block';
+        document.getElementById('text-hosp').innerText = drug.hospText + (hospNote ? " " + hospNote : "");
+    }
+
+    // --- 👇 網頁初始化與啟動 👇 ---
+    renderSelect();
+    handleDrugChange();
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); });
+    }
 </script>
+
 <div class="creator-footer">
-        <a href="https://liaoweihung.github.io/hub/index.html">&copy; 2026 💎 DiamondL 藥師開發設計</a>
-        &nbsp;|&nbsp;
-        <a href="https://liaoweihung.github.io/hub/feedback.html?source=兒科口服抗生素速算" target="_blank" onclick="gtag('event', 'click_feedback', { 'source_app': 'ped_abx' });">💬 意見回饋</a>
-    </div>
+    <a href="https://liaoweihung.github.io/hub/index.html">&copy; 2026 💎 DiamondL 藥師開發設計</a>
+    &nbsp;|&nbsp;
+    <a href="https://liaoweihung.github.io/hub/feedback.html?source=兒科口服抗生素速算" target="_blank" onclick="gtag('event', 'click_feedback', { 'source_app': 'ped_abx' });">💬 意見回饋</a>
+</div>
   
 </body>
 </html>
