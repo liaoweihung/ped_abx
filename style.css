@@ -1,0 +1,88 @@
+/* style.css */
+/* 負責整個兒科速算網頁的視覺外觀、排版與顏色 */
+
+body { font-family: "Microsoft JhengHei", -apple-system, sans-serif; background-color: #f4f7f6; margin: 0; padding: 0; color: #333; }
+.container { max-width: 600px; margin: 0 auto; background: white; min-height: 100vh; display: flex; flex-direction: column; }
+
+header { background: #2980b9; color: white; padding: 15px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+header h2 { margin: 0; font-size: 18px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+/* 切換按鈕樣式 */
+.nav-link {
+    display: inline-block; margin-top: 8px; font-size: 13px;
+    color: #fff; text-decoration: none;
+    background: rgba(255,255,255,0.2); padding: 6px 15px;
+    border-radius: 20px; transition: 0.2s;
+}
+.nav-link:active { background: rgba(255,255,255,0.4); }
+
+.content { padding: 15px; flex: 1; }
+
+.tab-group { display: flex; gap: 10px; margin-bottom: 20px; }
+.tab-btn { 
+    flex: 1; padding: 12px; border: 1px solid #bdc3c7; background: #ecf0f1; color: #7f8c8d; 
+    font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.2s;
+}
+.tab-btn.active { background: #3498db; color: white; border-color: #3498db; box-shadow: 0 3px 6px rgba(52, 152, 219, 0.3); }
+
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #2c3e50; font-size: 15px; }
+select, input { width: 100%; padding: 12px; border: 1px solid #bdc3c7; border-radius: 8px; font-size: 16px; background: #fff; box-sizing: border-box; }
+select:focus, input:focus { border-color: #3498db; outline: none; }
+
+.tamiflu-age-opt { display: none; flex-direction: row; gap: 5px; margin-bottom: 15px; }
+.tf-btn { flex: 1; padding: 10px 2px; border: 1px solid #17a2b8; background: white; color: #17a2b8; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px; }
+.tf-btn.active { background: #17a2b8; color: white; }
+
+#tamiflu-renal-block { display: none; margin-top: 20px; padding-top: 15px; border-top: 1px dashed #ccc; }
+
+.renal-calculator { background: #eaf2f8; padding: 15px; border-radius: 8px; border: 1px solid #aed6f1; margin-bottom: 15px; display: none; }
+.renal-calc-title { font-size: 14px; font-weight: bold; color: #2980b9; margin-bottom: 10px; border-bottom: 1px solid #d6eaf8; padding-bottom: 5px; }
+.calc-row { display: flex; gap: 10px; }
+.small-btn { padding: 8px 12px; background: #3498db; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; }
+
+.age-row { display: flex; gap: 10px; align-items: flex-end; }
+.age-input-group { flex: 1; }
+.estimate-btn { padding: 12px 10px; background-color: #17a2b8; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; height: 46px; white-space: nowrap; }
+#estimate-msg { font-size: 13px; color: #17a2b8; margin-top: 5px; display: none; }
+
+.calc-btn { width: 100%; padding: 14px; background: #e67e22; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 0 #d35400; }
+.calc-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #d35400; }
+
+.result-card { background-color: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 0; margin-top: 25px; display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.05); overflow: hidden; }
+.res-header { padding: 10px 15px; font-weight: bold; color: white; display: flex; justify-content: space-between; align-items: center; }
+.res-body { padding: 15px; display: flex; align-items: baseline; justify-content: space-between; }
+
+.res-hosp { background-color: #7f8c8d; }
+.res-assoc { background-color: #2980b9; }
+.res-tamiflu { background-color: #d35400; }
+/* 組合治療卡片 */
+.res-combo { background-color: #8e44ad; } 
+
+.res-val { font-size: 32px; font-weight: bold; color: #333; }
+.res-unit { font-size: 16px; color: #666; margin-left: 5px; }
+.res-freq { background: #eee; padding: 4px 10px; border-radius: 15px; font-size: 14px; font-weight: bold; color: #555; }
+
+.note-warning { color: #c0392b; font-weight: bold; margin-top: 5px; font-size: 14px; display: block; padding: 0 15px 15px 15px; }
+.renal-badge { background: #e74c3c; color: white; font-size: 12px; padding: 2px 6px; border-radius: 4px; margin-left: 5px; vertical-align: middle; display: none; }
+
+.guide-box { margin-top: 20px; font-size: 13px; line-height: 1.5; color: #555; }
+.guide-item { margin-bottom: 15px; padding: 10px; background: #f9f9f9; border-left: 4px solid #ccc; border-radius: 4px; }
+.guide-title { display: block; font-weight: bold; margin-bottom: 5px; color: #333; }
+.guide-hosp-border { border-left-color: #7f8c8d; }
+.guide-assoc-border { border-left-color: #2980b9; background-color: #eaf2f8; }
+
+.info-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+.info-table th, .info-table td { border: 1px solid #bdc3c7; padding: 8px; text-align: left; vertical-align: middle; }
+.info-table th { background-color: #ecf0f1; text-align: center; font-weight: bold; color: #2c3e50; }
+.info-table tr:nth-child(even) { background-color: #f8f9fa; }
+.info-table td small { display: block; color: #7f8c8d; margin-top: 4px; font-size: 12px; }
+
+.tamiflu-ref-section { margin-top: 25px; display: none; }
+.ref-title { font-size: 15px; font-weight: bold; color: #d35400; border-left: 4px solid #d35400; padding-left: 8px; margin-bottom: 10px; }
+
+footer { text-align: center; padding: 20px; background: #eee; font-size: 12px; color: #aaa; margin-top: auto; line-height: 1.6; }
+/* === 開發者專屬頁尾樣式 (極簡連結版) === */
+.creator-footer { text-align: center; padding: 25px 0 20px 0; width: 100%; color: #888888; }
+.creator-footer a { color: #888888; text-decoration: none; font-size: 13px; letter-spacing: 1px; transition: color 0.2s; }
+.creator-footer a:active { color: #66b3ff; }
