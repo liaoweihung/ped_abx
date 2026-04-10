@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>小兒/成人劑量速算 (20251231版)</title>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-T5R33JYTC0"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T5R33JYTC0"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -227,7 +226,6 @@
                 <div class="res-body" style="flex-direction: column; align-items: flex-start; gap:8px;">
                      <div style="font-size:14px; color:#555;">目標總量: <span id="combo-target-mg" style="font-weight:bold; color:#8e44ad;">--</span> mg/day</div>
                      
-                     <!-- 動態輸入互動區塊 -->
                      <div style="background:#f3e5f5; padding:12px; border-radius:8px; width:100%; box-sizing:border-box; margin-top:5px;">
                          <label style="font-size:14px; font-weight:bold; color:#8e44ad; display:block; margin-bottom:8px;" id="combo-input-label">若醫師實際開立：</label>
                          <div style="display:flex; gap:10px; align-items:center;">
@@ -325,10 +323,6 @@
         </div>
     </div>
 
-    <footer>
-        本頁面資訊僅供專業人參考,非專業人士勿自行調整用藥<br>
-        修改日期 20251231
-    </footer>
 </div>
 
 <script>
@@ -362,11 +356,11 @@
         currentMode = mode;
         const btns = document.querySelectorAll('.tab-btn');
         if (mode === 'susp') {
-            btns.classList.add('active');
-            btns[cite: 1].classList.remove('active');
+            btns[0].classList.add('active');
+            btns[1].classList.remove('active');
         } else {
-            btns.classList.remove('active');
-            btns[cite: 1].classList.add('active');
+            btns[0].classList.remove('active');
+            btns[1].classList.add('active');
         }
         renderSelect();
         hideResult();
@@ -376,7 +370,7 @@
     function renderSelect() {
         const select = document.getElementById('drug');
         select.innerHTML = '';
-        db.forEach((d, index) => {
+        db[currentMode].forEach((d, index) => {
             const opt = document.createElement('option');
             opt.value = index;
             opt.text = d.name;
@@ -387,7 +381,7 @@
     function handleDrugChange() {
         hideResult();
         const drugIdx = document.getElementById('drug').value;
-        const drug = db;
+        const drug = db[currentMode][drugIdx];
         
         const tfModeSelect = document.getElementById('tamiflu-mode-select');
         const tfRenal = document.getElementById('tamiflu-renal-block');
@@ -468,7 +462,7 @@
         if (!age || age <= 0) { alert("請先輸入有效的年齡"); return; }
         let estWeight = 0;
         let lookupAge = (age < 1) ? 0.5 : Math.round(age);
-        if (growthChart) estWeight = growthChart;
+        if (growthChart[lookupAge]) estWeight = growthChart[lookupAge];
         else estWeight = (age * 2) + 8;
         weightInput.value = estWeight;
         msgDiv.innerText = `💡 已填入參考體重: ${estWeight} kg`;
@@ -487,7 +481,7 @@
         const weight = parseFloat(document.getElementById('weight').value);
         const actualDose = parseFloat(document.getElementById('combo-actual-dose').value) || 0;
         const drugIdx = document.getElementById('drug').value;
-        const drug = db;
+        const drug = db[currentMode][drugIdx];
 
         if (!weight || weight <= 0) return;
 
@@ -531,7 +525,7 @@
     
     function calculate() {
         const drugIdx = document.getElementById('drug').value;
-        const drug = db;
+        const drug = db[currentMode][drugIdx];
         const weight = parseFloat(document.getElementById('weight').value);
 
         // --- 👇 新增：追蹤口服計算動作 👇 ---
@@ -583,7 +577,7 @@
             document.getElementById('warning-tamiflu').innerText = warning;
             document.getElementById('res-card-tamiflu').style.display = 'block';
             document.getElementById('tamiflu-ref-container').style.display = 'block';
-           .forEach(id => document.getElementById(id).style.display = 'none');
+            ['tf-ref-child', 'tf-ref-infant', 'tf-ref-adult'].forEach(id => document.getElementById(id).style.display = 'none');
             if (tamifluAgeMode === 'infant') document.getElementById('tf-ref-infant').style.display = 'block';
             else if (tamifluAgeMode === 'adult') document.getElementById('tf-ref-adult').style.display = 'block';
             else document.getElementById('tf-ref-child').style.display = 'block';
