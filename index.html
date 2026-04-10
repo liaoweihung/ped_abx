@@ -219,14 +219,28 @@
                 <span id="warning-assoc" class="note-warning"></span>
             </div>
 
-            <div id="res-card-combo" class="result-card" style="display:none;">
+           <div id="res-card-combo" class="result-card" style="display:none;">
                 <div class="res-header res-combo">
-                    <span>💊 高劑量中耳炎組合</span>
+                    <span>💊 高劑量中耳炎組合 (動態核算)</span>
                     <small>Target 90mg/kg</small>
                 </div>
                 <div class="res-body" style="flex-direction: column; align-items: flex-start; gap:8px;">
-                     <div style="font-size:14px; color:#555;">為達 80-90mg/kg/day，需額外添加：</div>
-                     <div><span class="res-val" id="val-combo">--</span><span class="res-unit" id="unit-combo"></span></div>
+                     <div style="font-size:14px; color:#555;">目標總量: <span id="combo-target-mg" style="font-weight:bold; color:#8e44ad;">--</span> mg/day</div>
+                     
+                     <!-- 動態輸入互動區塊 -->
+                     <div style="background:#f3e5f5; padding:12px; border-radius:8px; width:100%; box-sizing:border-box; margin-top:5px;">
+                         <label style="font-size:14px; font-weight:bold; color:#8e44ad; display:block; margin-bottom:8px;" id="combo-input-label">若醫師實際開立：</label>
+                         <div style="display:flex; gap:10px; align-items:center;">
+                             <input type="number" id="combo-actual-dose" style="width:80px; padding:8px; border:2px solid #8e44ad; border-radius:6px; font-size:16px; font-weight:bold; text-align:center;" step="0.1" inputmode="decimal" oninput="recalcCombo()">
+                             <span id="combo-input-unit" style="font-size:15px; color:#555; font-weight:bold;"></span>
+                         </div>
+                     </div>
+
+                     <div style="margin-top:8px; font-size:14px; color:#555;" id="combo-result-title">需額外搭配：</div>
+                     <div style="display:flex; align-items:baseline; gap:5px;">
+                         <span class="res-val" id="val-combo" style="color:#8e44ad;">--</span>
+                         <span class="res-unit" id="unit-combo"></span>
+                     </div>
                      <div class="res-freq" id="text-combo" style="background:#f3e5f5; color:#8e44ad"></div>
                 </div>
             </div>
@@ -469,6 +483,53 @@
         document.getElementById('estimate-msg').style.display = 'none';
     }
 
+　　// === 新增：組合治療動態反推功能 ===
+    function recalcCombo() {
+        const weight = parseFloat(document.getElementById('weight').value);
+        const actualDose = parseFloat(document.getElementById('combo-actual-dose').value) || 0;
+        const drugIdx = document.getElementById('drug').value;
+        const drug = db;
+
+        if (!weight || weight <= 0) return;
+
+        let targetDailyMg = weight * 90; // 目標 90 mg/kg/day
+
+        if (drug.id === 'aug') {
+            // 輸入的是 Augmentin mL BID
+            let augDailyMg = actualDose * 2 * 80; // mL * 2次 * 80mg/mL
+            let gapMg = targetDailyMg - augDailyMg;
+            
+            if (gapMg > 0) {
+                let capsNeeded = gapMg / 500;
+                document.getElementById('val-combo').innerText = `+ Amoxicillin (500) ${capsNeeded.toFixed(2)}`;
+                document.getElementById('unit-combo').innerText = "顆 / 天";
+                document.getElementById('text-combo').innerText = `補足差額 ${gapMg.toFixed(0)} mg/day (可分BID給予)`;
+                document.getElementById('text-combo').style.display = 'inline-block';
+            } else {
+                document.getElementById('val-combo').innerText = "✔️ 總量已達標";
+                document.getElementById('unit-combo').innerText = "(無需添加)";
+                document.getElementById('text-combo').style.display = 'none';
+            }
+        } else if (drug.id === 'amox') {
+            // 輸入的是 Amoxicillin 總顆數/天
+            let amoxDailyMg = actualDose * 500;
+            let gapMg = targetDailyMg - amoxDailyMg;
+            
+            if (gapMg > 0) {
+                let augMlPerDay = gapMg / 80;
+                let augMlBid = augMlPerDay / 2;
+                document.getElementById('val-combo').innerText = `+ Augmentin Susp ${augMlBid.toFixed(1)}`;
+                document.getElementById('unit-combo').innerText = "mL BID";
+                document.getElementById('text-combo').innerText = `補足差額 ${gapMg.toFixed(0)} mg/day`;
+                document.getElementById('text-combo').style.display = 'inline-block';
+            } else {
+                document.getElementById('val-combo').innerText = "✔️ 總量已達標";
+                document.getElementById('unit-combo').innerText = "(無需添加)";
+                document.getElementById('text-combo').style.display = 'none';
+            }
+        }
+    }　
+    
     function calculate() {
         const drugIdx = document.getElementById('drug').value;
         const drug = db[currentMode][drugIdx];
@@ -581,62 +642,35 @@
             document.getElementById('text-assoc-box').style.display = 'none';
         }
 
-        // --- 組合治療邏輯 (New Combo Logic) ---
+       // --- 組合治療邏輯 (動態輸入版) ---
         const comboCard = document.getElementById('res-card-combo');
-        const valCombo = document.getElementById('val-combo');
-        const unitCombo = document.getElementById('unit-combo');
-        const textCombo = document.getElementById('text-combo');
 
-        // 1. 若選擇 Augmentin (水劑)，顯示添加 Amoxicillin (磨粉)
         if (drug.id === 'aug') {
-            // Target High Dose: 90 mg/kg/day
-            let targetDailyMg = weight * 90;
-            // Current Augmentin provides 45 mg/kg/day (based on Hosp logic)
-            let currentDailyMg = weight * 45;
-            // Gap to fill
-            let gapMg = targetDailyMg - currentDailyMg;
+            document.getElementById('combo-target-mg').innerText = (weight * 90).toFixed(0);
+            document.getElementById('combo-input-label').innerText = "若醫師開立 Augmentin 水劑：";
+            document.getElementById('combo-input-unit').innerText = "mL BID";
             
-            if (gapMg > 0) {
-                // Amoxicillin 500mg/cap
-                let capsNeeded = gapMg / 500;
-                // 分頻次: BID (一天總量就是這些)
-                let capsPerDay = capsNeeded.toFixed(2);
-                
-                valCombo.innerText = `+ Amoxicillin (500mg) ${capsPerDay}`;
-                unitCombo.innerText = "顆 / 天";
-                textCombo.innerText = `為達 90mg/kg/day，需補足差額 ${gapMg.toFixed(0)} mg/day (建議分 BID 給予)`;
-                comboCard.style.display = 'block';
-            } else {
-                comboCard.style.display = 'none';
-            }
-        } 
-        // 2. 若選擇 Amoxicillin (磨粉)，顯示若為 High Dose 需搭配多少 Augmentin
-        else if (drug.id === 'amox') {
-             // 假設這是 High Dose 的 "外掛" 部分，反推 "主體" Augmentin 該給多少
-             // Standard Augmentin 45mg/kg/day
-             let augDailyMg = weight * 45;
-             // Augmentin conc 80mg/ml
-             let augMlPerDay = augDailyMg / 80;
-             let augMlBid = augMlPerDay / 2;
-
-             valCombo.innerText = `+ Augmentin Susp ${augMlBid.toFixed(1)}`;
-             unitCombo.innerText = "mL BID";
-             textCombo.innerText = `若為中耳炎高劑量組合，建議搭配此劑量之 Augmentin 水劑`;
-             comboCard.style.display = 'block';
-        } 
-        else {
+            // 帶入預設的院內建議劑量 (方便直接算)
+            let defaultAugBid = ((weight * 45 / 80) / 2).toFixed(1);
+            document.getElementById('combo-actual-dose').value = defaultAugBid;
+            
+            comboCard.style.display = 'block';
+            recalcCombo(); // 觸發計算
+            
+        } else if (drug.id === 'amox') {
+            document.getElementById('combo-target-mg').innerText = (weight * 90).toFixed(0);
+            document.getElementById('combo-input-label').innerText = "若醫師開立 Amox 膠囊：";
+            document.getElementById('combo-input-unit').innerText = "顆 / 天 (總量)";
+            
+            // 預設帶入 1 顆/天 讓醫師/藥師參考
+            document.getElementById('combo-actual-dose').value = 1;
+            
+            comboCard.style.display = 'block';
+            recalcCombo(); // 觸發計算
+            
+        } else {
             comboCard.style.display = 'none';
         }
-
-        document.getElementById('guide-container').style.display = 'block';
-        document.getElementById('text-hosp').innerText = drug.hospText + (hospNote ? " " + hospNote : "");
-    }
-
-    renderSelect();
-    handleDrugChange();
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); });
-    }
 </script>
 <div class="creator-footer">
         <a href="https://liaoweihung.github.io/hub/index.html">&copy; 2026 💎 DiamondL 藥師開發設計</a>
