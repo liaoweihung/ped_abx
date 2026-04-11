@@ -1,7 +1,7 @@
 // 每當您修改 index.html 後，請務必修改這裡的版本號
 // 例如：從 'v1' 改成 'v2'，或是用日期 'v20251230'
 // 只要這個字串改變，使用者的瀏覽器就會知道「有新版本了」，進而重新下載。
-const CACHE_NAME = 'pediatric-calc-v202604110019'; 
+const CACHE_NAME = 'pediatric-calc-v202604112037'; 
 
 const ASSETS_TO_CACHE = [
   './',
@@ -10,6 +10,9 @@ const ASSETS_TO_CACHE = [
   './style.css',      // 上次加的皮膚
   './database.js',    // 上次加的資料庫
   './app.js',         // 👇 這次加的大腦
+  './style_inj.css',     // 新增針劑樣式
+  './database_inj.js',   // 新增針劑資料庫
+  './app_inj.js',        // 新增針劑邏輯
   './manifest.json'
   './injectables.html'
   './icon_inj.png',
